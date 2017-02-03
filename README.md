@@ -1,0 +1,2 @@
+# 18plusplus
+Strategi Algoritma
