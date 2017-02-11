@@ -1,0 +1,7 @@
+0. Buka github, terus git clone "https://github.com/reiva5/18plusplus.git"
+1. Sebelum upload, yang diupload taro luar
+2. git pull
+3. Yang mau di upload, taro di dalam folder
+4. git add .
+5. git commit -m "Iseng doang"
+6. git push
