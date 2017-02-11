@@ -1,39 +1,41 @@
 #include <bits/stdc++.h>
 #include "Player.h"
+#include "Bomb.h"
+#include "Point.h"
 using namespace std;
 
 Player::Player()
 {
-	this->B = new Bomb;
-	this->P = new Posisi;
+	Bomb temp = Bomb();
+	this->B = temp;
 }
 
 Player::Player(Bomb B)
 {
-	this->B = new Bomb(B);
+	Bomb temp = Bomb(B);
+	this->B = temp;
 }
 
-Player::Player(Posisi P)
+Player::Player(Point P)
 {
-	this->P = new Posisi(P);
+	Point temp = Point(P);
+	this->P = temp;
 }
 
-Player::Player(Bomb B, Posisi P)
+Player::Player(Bomb B, Point P)
 {
-	this->P = new Posisi(P);
-	this->B = new Bomb(B);
+	Bomb temps = Bomb(B);
+	Point junk = Point(P);
+	this->P = junk;
+	this->B = temps;
 }
 
 Player::Player(const Player& P)
 {
-	this->P = new Posisi(P.P);
-	this->B = new Bomb(P.B);
-}
-
-Player::~Player()
-{
-	delete this->B;
-	delete this->P;
+	Bomb temps = Bomb(P.B);
+	Point junk = Point(P.P);
+	this->P = junk;
+	this->B = temps;
 }
 
 Player& Player::operator= (Player& P)

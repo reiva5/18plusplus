@@ -12,14 +12,9 @@ Point::Point(int x, int y)
 	this->y = y;
 }
 
-Point::~Point()
-{
-	delete this->x;
-	delete this->y;
-}
-
 Point& Point::operator= (Point& B)
 {
 	this->x = B.x;
 	this->y = B.y;
+	return (*this);
 }

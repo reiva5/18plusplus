@@ -1,27 +1,22 @@
 #ifndef PLAYER_H
 #define PLAYER_H
+#include "Bomb.h"
+#include "Point.h"
 
 class Player
 {
 	public:
 		Player();
-		
-		Player(Bomb B);
-
-		Player(Posisi Y);
-
-		Player(Bomb B, Posisi Y);
-
+		Player(Bomb X);
+		Player(Point Y);
+		Player(Bomb B, Point Y);
 		Player(const Player& P);
-
-		~Player();
-
 		Player& operator= (Player& P);
 
 		
 	private:
 		Bomb B;
-		Posisi P;
+		Point P;
 };
 
 #endif

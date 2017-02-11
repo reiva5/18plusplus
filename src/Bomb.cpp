@@ -6,7 +6,8 @@ Bomb::Bomb()
 {
 	this->jarak = 0;
 	this->durasi = 1;
-	this->point = new Point;
+	Point temp = Point();
+	this->posisi = temp;
 }
 		
 Bomb::Bomb(int jarak, int durasi, Point posisi)
@@ -16,16 +17,10 @@ Bomb::Bomb(int jarak, int durasi, Point posisi)
 	this->posisi = posisi;
 }
 
-Bomb::~Bomb()
-{
-	delete this->jarak;
-	delete this->durasi;
-	delete this->posisi;
-}
-
 Bomb& Bomb::operator= (Bomb& B)
 {
 	this->jarak = B.jarak;
 	this->durasi = B.durasi;
 	this->posisi = B.posisi;
+	return (*this);
 }
