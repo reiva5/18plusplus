@@ -16,10 +16,6 @@ Point& Point::operator= (Point& B)
 {
 	this->x = B.x;
 	this->y = B.y;
-<<<<<<< HEAD
-	return (*this);
-}
-=======
 }
 
 int Point::GetAbsis(){
@@ -37,4 +33,3 @@ void Point::SetAbsis(int n){
 void Point::SetOrdinat(int n){
 	y=n;
 }
->>>>>>> d285b4fb42e184cc9cc88b372358b9e9fb39e528
