@@ -1,22 +1,23 @@
 #ifndef PLAYER_H
 #define PLAYER_H
-#include "Bomb.h"
+
 #include "Point.h"
 
 class Player
 {
 	public:
-		Player();
-		Player(Bomb X);
-		Player(Point Y);
-		Player(Bomb B, Point Y);
-		Player(const Player& P);
+		Player(char, Point, int, int);
+
+		char GetKey();
+
 		Player& operator= (Player& P);
 
 		
 	private:
-		Bomb B;
-		Point P;
+		char playerKey;
+		Point posisi;
+		int bombBag;
+		int bombRadius;
 };
 
 #endif

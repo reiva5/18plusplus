@@ -8,17 +8,12 @@ class Point
 		
 		Point(int x, int y);
 
-		~Point();
-
 		Point& operator= (Point& B);
 
-		int GetAbsis();
+		void SetAbsis(int x);
 
-		int GetOrdinat();
+		void SetOrdinat(int y);
 
-		void SetAbsis(int n);
-
-		void SetOrdinat(int n);
 		
 	private:
 		int x;

@@ -14,5 +14,10 @@ int main(){
 	
 	GameState state(j);
 	state.GetMap().PrintMap();
+
+	vector<Player> p=state.GetPlayer();
+	for(int i=0; i<p.size(); i++){
+		cout<<p[i].GetKey()<<endl;
+	}
 	return 0;
 }
