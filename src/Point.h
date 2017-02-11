@@ -12,6 +12,13 @@ class Point
 
 		Point& operator= (Point& B);
 
+		int GetAbsis();
+
+		int GetOrdinat();
+
+		void SetAbsis(int n);
+
+		void SetOrdinat(int n);
 		
 	private:
 		int x;

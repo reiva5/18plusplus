@@ -10,11 +10,16 @@ class Bomb
 		
 		Bomb(int jarak, int durasi, Point posisi);
 
-		~Bomb();
-
 		Bomb& operator= (Bomb& B);
 
-		
+		int GetJarak();
+
+		int GetDurasi();
+
+		Point GetPosisi();
+
+		void SetDuration(int n);
+
 	private:
 		int jarak;
 		int durasi;
