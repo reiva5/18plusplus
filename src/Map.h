@@ -7,7 +7,7 @@ class Map{
 		Map(); 
 		Map(json&);
 		~Map();
-		Map& operator=(Map&);
+		Map& operator=(const Map&);
 		Map(Map&);
 		char GetElmt(int, int);
 		int GetWidth();

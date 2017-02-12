@@ -3,9 +3,11 @@
 using json=nlohmann::json;
 using namespace std;
 
-GameState::GameState(json& j): map(j){
+GameState::GameState(json& j): map(j)
+{
 	json play=j["RegisteredPlayerEntities"];
-	for (auto i : play){
+	for (auto i : play)
+	{
 		string playerKey= i["Key"].get<string>();
 		int x = i["Location"]["X"].get<int>()-1;
 		int y = i["Location"]["Y"].get<int>()-1;
@@ -17,9 +19,12 @@ GameState::GameState(json& j): map(j){
 	}
 
 	json b=j["GameBlocks"];
-	for(auto k: b){
-		for (auto i : k){
-			if(i["Bomb"]!=NULL){
+	for(auto k: b)
+	{
+		for (auto i : k)
+		{
+			if(i["Bomb"]!=NULL)
+			{
 				int jarak= i["Bomb"]["BombRadius"].get<int>();
 				int durasi= i["Bomb"]["BombTimer"].get<int>();
 				int x=i["Bomb"]["Location"]["X"].get<int>()-1;
@@ -33,19 +38,23 @@ GameState::GameState(json& j): map(j){
 	}
 }
 
-Map& GameState::GetMap(){
+Map& GameState::GetMap()
+{
 	return map;
 }
 
-vector<Player> GameState::GetPlayer(){
+vector<Player> GameState::GetPlayer()
+{
 	return player;
 }
 
-vector<Bomb> GameState::GetBomb(){
+vector<Bomb> GameState::GetBomb()
+{
 	return bomb;
 }
 
-bool GameState::in_danger (Point P){
+bool GameState::in_danger (Point P)
+{
 	int i = 0;
 	bool cek = false;
 	Point Ptemp;
@@ -55,7 +64,8 @@ bool GameState::in_danger (Point P){
 	}
 }
 
-bool GameState::bomb_in_row(Point P){
+bool GameState::bomb_in_row(Point P)
+{
 	bool cek;
 	int i = 0;
 	Point Ptemp;
@@ -67,13 +77,16 @@ bool GameState::bomb_in_row(Point P){
 	return cek;
 }
 
-bool GameState::bomb_in_coloum(Point P){
+bool GameState::bomb_in_column(Point P)
+{
 	bool cek = false;
 	int i = 0;
 	Point Ptemp;
-	while(i < bomb.size() && !cek){
+	while(i < bomb.size() && !cek)
+	{
 		Ptemp = bomb[i].GetPosisi();
-		if(P.GetOrdinat() == Ptemp.GetOrdinat()){
+		if(P.GetOrdinat() == Ptemp.GetOrdinat())
+		{
 			cek = true;
 		}
 		i++;
@@ -81,7 +94,8 @@ bool GameState::bomb_in_coloum(Point P){
 	return cek;
 }
 
-bool GameState::in_area(Point P, Bomb B){
+bool GameState::in_area(Point P, Bomb B)
+{
 	Point Ptemp = B.GetPosisi();
 	bool cekX = false;
 	bool cekY = false;
@@ -89,12 +103,14 @@ bool GameState::in_area(Point P, Bomb B){
 
 	batas1 = Ptemp.GetAbsis() + B.GetJarak();
 	batas2 = Ptemp.GetAbsis() - B.GetJarak();
-	if(P.GetAbsis() >= batas2 && P.GetAbsis() <= batas1){
+	if(P.GetAbsis() >= batas2 && P.GetAbsis() <= batas1)
+	{
 		cekX=true;
 	}
 	batas1 = Ptemp.GetOrdinat() + B.GetJarak();
 	batas2 = Ptemp.GetOrdinat() - B.GetJarak();
-	if(P.GetOrdinat() >= batas2 && P.GetOrdinat() <= batas1){
+	if(P.GetOrdinat() >= batas2 && P.GetOrdinat() <= batas1)
+	{
 		cekY = true;
 	}
 

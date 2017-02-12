@@ -16,7 +16,7 @@ class GameState{
 		vector<Bomb> GetBomb();
 		bool in_danger (Point P);
 		bool bomb_in_row(Point P);
-		bool bomb_in_coloum(Point P);
+		bool bomb_in_column(Point P);
 		bool in_area(Point P, Bomb B);
 
 	private:

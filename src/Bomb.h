@@ -6,20 +6,13 @@
 class Bomb
 {
 	public:
-		Bomb();
-		
+		Bomb();		
 		Bomb(int jarak, int durasi, Point posisi, char owner);
-
-		Bomb& operator= (Bomb& B);
-
+		Bomb& operator= (const Bomb& B);
 		int GetJarak();
-
 		int GetDurasi();
-
 		Point GetPosisi();
-
 		void SetDuration(int n);
-
 		char GetOwner();
 
 	private:

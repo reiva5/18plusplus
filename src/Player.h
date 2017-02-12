@@ -7,11 +7,10 @@ class Player
 {
 	public:
 		Player(char, Point, int, int);
-
 		char GetKey();
-
-		Player& operator= (Player& P);
-
+		Player& operator= (const Player& P);
+		int GetBombBag();
+		int GetBombRadius();
 		
 	private:
 		char playerKey;

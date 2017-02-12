@@ -21,29 +21,34 @@ Bomb::Bomb(int jarak, int durasi, Point posisi, char owner)
 	this->owner=owner;
 }
 
-Bomb& Bomb::operator= (Bomb& B)
+Bomb& Bomb::operator= (const Bomb& B)
 {
 	this->jarak = B.jarak;
 	this->durasi = B.durasi;
 	this->posisi = B.posisi;
 	return (*this);
 }
-int Bomb::GetJarak(){
+int Bomb::GetJarak()
+{
 	return this->jarak;
 }
 
-int Bomb::GetDurasi(){
+int Bomb::GetDurasi()
+{
 	return this->durasi;
 }
 
-Point Bomb::GetPosisi(){
+Point Bomb::GetPosisi()
+{
 	return this->posisi;
 }
 
-void Bomb::SetDuration(int n){
+void Bomb::SetDuration(int n)
+{
 	this->durasi=n;
 }
 
-char Bomb::GetOwner(){
+char Bomb::GetOwner()
+{
 	return owner;
 }

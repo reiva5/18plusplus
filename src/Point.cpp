@@ -12,7 +12,6 @@ Point::Point(int x, int y)
 	this->y = y;
 }
 
-
 Point& Point::operator= (const Point& B)
 {
 	this->x = B.x;
@@ -20,19 +19,23 @@ Point& Point::operator= (const Point& B)
 	return *this;
 }
 
-void Point::SetAbsis(int x){
-	this->x=x;
+void Point::SetAbsis(int x)
+{
+	this->x = x;
 }
 
-void Point::SetOrdinat(int y){
-	this->y=y;
+void Point::SetOrdinat(int y)
+{
+	this->y = y;
 }
 
-int Point::GetAbsis(){
+int Point::GetAbsis()
+{
 	return x;
 }
 
-int Point::GetOrdinat(){
+int Point::GetOrdinat()
+{
 	return y;
 }
 

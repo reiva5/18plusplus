@@ -4,68 +4,91 @@
 using namespace std;
 using json=nlohmann::json;
 
-Map::Map(){
+Map::Map()
+{
 	mapheight=21;
 	mapwidth=21;
 
 	elemen = new char*[mapheight];
-	for(int i=0; i<mapwidth; i++){
+	for(int i=0; i<mapwidth; i++)
+	{
 		elemen[i]= new char[mapwidth];
 	}
 }
 
-Map::Map(json& j){
+Map::Map(json& j)
+{
 	mapwidth=j["MapWidth"].get<int>();
 	mapheight=j["MapHeight"].get<int>();
 
 	elemen = new char*[mapheight];
-	for(int i=0; i<mapwidth; i++){
+	for(int i=0; i<mapwidth; i++)
+	{
 		elemen[i]= new char[mapwidth];
 	}
 
 	json gameBlocks=j["GameBlocks"];
-	for (auto i : gameBlocks){
-		for (auto k : i){
+	for (auto i : gameBlocks)
+	{
+		for (auto k : i)
+		{
 			if(k["Bomb"]!=NULL)
-					elemen[k["Location"]["Y"].get<int>()-1][k["Location"]["X"].get<int>()-1]='0';
-			else if(k["Entity"]["$type"]==NULL){
-				if(k["PowerUp"]!=NULL)
-					elemen[k["Location"]["Y"].get<int>()-1][k["Location"]["X"].get<int>()-1]='!';
-				else
-					elemen[k["Location"]["Y"].get<int>()-1][k["Location"]["X"].get<int>()-1]=' ';
+			{
+				elemen[k["Location"]["Y"].get<int>()-1][k["Location"]["X"].get<int>()-1]='0';
 			}
-			else if(k["Entity"]["$type"]=="Domain.Entities.IndestructibleWallEntity, Domain"){
+			else if(k["Entity"]["$type"]==NULL)
+			{
+				if(k["PowerUp"]!=NULL)
+				{
+					elemen[k["Location"]["Y"].get<int>()-1][k["Location"]["X"].get<int>()-1]='!';
+				}
+				else
+				{
+					elemen[k["Location"]["Y"].get<int>()-1][k["Location"]["X"].get<int>()-1]=' ';
+				}
+			}
+			else if(k["Entity"]["$type"]=="Domain.Entities.IndestructibleWallEntity, Domain")
+			{
 				elemen[k["Location"]["Y"].get<int>()-1][k["Location"]["X"].get<int>()-1]='#';
 			}
 			else if(k["Entity"]["$type"]=="Domain.Entities.DestructibleWallEntity, Domain")
+			{	
 				elemen[k["Location"]["Y"].get<int>()-1][k["Location"]["X"].get<int>()-1]='+';
+			}
 		}
 	}
 }
 
-Map::~Map(){
-	for(int i=0; i<mapheight; i++){
+Map::~Map()
+{
+	for(int i=0; i<mapheight; i++)
+	{
 		delete [] elemen[i];
 	}
 	delete [] elemen;
 }
 
-Map& Map::operator=(Map& m){
+Map& Map::operator=(const Map& m)
+{
 	this->mapwidth=m.mapwidth;
 	this->mapheight=m.mapheight;
 
-	for(int i=0; i<mapheight; i++){
+	for(int i=0; i<mapheight; i++)
+	{
 		delete [] elemen[i];
 	}
 	delete [] elemen;
 
 	elemen = new char*[mapheight];
-	for(int i=0; i<mapwidth; i++){
+	for(int i=0; i<mapwidth; i++)
+	{
 		elemen[i]= new char[mapwidth];
 	}
 
-	for(int i=0; i<mapheight; i++){
-		for(int j=0; j<mapwidth; j++){
+	for(int i=0; i<mapheight; i++)
+	{
+		for(int j=0; j<mapwidth; j++)
+		{
 			elemen[i][j]=m.elemen[i][j];
 		}
 	}
@@ -73,30 +96,37 @@ Map& Map::operator=(Map& m){
 	return *this;
 }
 
-Map::Map(Map& m){
+Map::Map(Map& m)
+{
 	this->mapwidth=m.mapwidth;
 	this->mapheight=m.mapheight;
 
 	elemen = new char*[mapheight];
-	for(int i=0; i<mapwidth; i++){
+	for(int i=0; i<mapwidth; i++)
+	{
 		elemen[i]= new char[mapwidth];
 	}
 
-	for(int i=0; i<mapheight; i++){
-		for(int j=0; j<mapwidth; j++){
+	for(int i=0; i<mapheight; i++)
+	{
+		for(int j=0; j<mapwidth; j++)
+		{
 			elemen[i][j]=m.elemen[i][j];
 		}
 	}
 }
 
-char Map::GetElmt(int y, int x){
+char Map::GetElmt(int y, int x)
+{
 	return elemen[y][x];
 }
 
-int Map::GetWidth(){
+int Map::GetWidth()
+{
 	return mapwidth;
 }
 
-int Map::GetHeight(){
+int Map::GetHeight()
+{
 	return mapheight;
 }
