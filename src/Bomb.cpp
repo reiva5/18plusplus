@@ -10,13 +10,15 @@ Bomb::Bomb()
 	this->posisi = temp;
 	this->posisi.SetAbsis(0);
 	this->posisi.SetOrdinat(0);
+	this->owner='0';
 }
 		
-Bomb::Bomb(int jarak, int durasi, Point posisi)
+Bomb::Bomb(int jarak, int durasi, Point posisi, char owner)
 {
 	this->jarak = jarak;
 	this->durasi = durasi;
 	this->posisi = posisi;
+	this->owner=owner;
 }
 
 Bomb& Bomb::operator= (Bomb& B)
@@ -40,4 +42,8 @@ Point Bomb::GetPosisi(){
 
 void Bomb::SetDuration(int n){
 	this->durasi=n;
+}
+
+char Bomb::GetOwner(){
+	return owner;
 }
