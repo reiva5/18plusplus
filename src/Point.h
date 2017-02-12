@@ -14,6 +14,10 @@ class Point
 
 		void SetOrdinat(int y);
 
+		int GetAbsis();
+
+		int GetOrdinat();
+
 		
 	private:
 		int x;

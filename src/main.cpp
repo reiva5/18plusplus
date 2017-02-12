@@ -13,7 +13,13 @@ int main(){
 	json_file.close();
 	
 	GameState state(j);
-	state.GetMap().PrintMap();
+	Map m= state.GetMap();
+	for(int i=0; i<m.GetHeight(); i++){
+		for(int j=0; j<m.GetWidth(); j++){
+			cout<<m.GetElmt(i, j);
+		}
+		cout<<endl;
+	}
 
 	vector<Player> p=state.GetPlayer();
 	for(int i=0; i<p.size(); i++){
@@ -22,7 +28,7 @@ int main(){
 
 	vector<Bomb> b=state.GetBomb();
 	for (int i=0; i<b.size(); i++){
-		cout<<i<<' '<<b[i].GetOwner()<<endl;
+		cout<<i<<' '<<b[i].GetOwner()<<' '<<b[i].GetPosisi().GetAbsis()<<' '<<b[i].GetPosisi().GetOrdinat()<<endl;
 	}
 	return 0;
 }

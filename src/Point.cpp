@@ -26,3 +26,12 @@ void Point::SetAbsis(int x){
 void Point::SetOrdinat(int y){
 	this->y=y;
 }
+
+int Point::GetAbsis(){
+	return x;
+}
+
+int Point::GetOrdinat(){
+	return y;
+}
+

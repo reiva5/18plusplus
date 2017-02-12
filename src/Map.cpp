@@ -4,6 +4,16 @@
 using namespace std;
 using json=nlohmann::json;
 
+Map::Map(){
+	mapheight=21;
+	mapwidth=21;
+
+	elemen = new char*[mapheight];
+	for(int i=0; i<mapwidth; i++){
+		elemen[i]= new char[mapwidth];
+	}
+}
+
 Map::Map(json& j){
 	mapwidth=j["MapWidth"].get<int>();
 	mapheight=j["MapHeight"].get<int>();
@@ -33,11 +43,60 @@ Map::Map(json& j){
 	}
 }
 
-void Map::PrintMap(){
+Map::~Map(){
+	for(int i=0; i<mapheight; i++){
+		delete [] elemen[i];
+	}
+	delete [] elemen;
+}
+
+Map& Map::operator=(Map& m){
+	this->mapwidth=m.mapwidth;
+	this->mapheight=m.mapheight;
+
+	for(int i=0; i<mapheight; i++){
+		delete [] elemen[i];
+	}
+	delete [] elemen;
+
+	elemen = new char*[mapheight];
+	for(int i=0; i<mapwidth; i++){
+		elemen[i]= new char[mapwidth];
+	}
+
 	for(int i=0; i<mapheight; i++){
 		for(int j=0; j<mapwidth; j++){
-			cout<<elemen[i][j];
+			elemen[i][j]=m.elemen[i][j];
 		}
-		cout<<endl;
 	}
+
+	return *this;
+}
+
+Map::Map(Map& m){
+	this->mapwidth=m.mapwidth;
+	this->mapheight=m.mapheight;
+
+	elemen = new char*[mapheight];
+	for(int i=0; i<mapwidth; i++){
+		elemen[i]= new char[mapwidth];
+	}
+
+	for(int i=0; i<mapheight; i++){
+		for(int j=0; j<mapwidth; j++){
+			elemen[i][j]=m.elemen[i][j];
+		}
+	}
+}
+
+char Map::GetElmt(int y, int x){
+	return elemen[y][x];
+}
+
+int Map::GetWidth(){
+	return mapwidth;
+}
+
+int Map::GetHeight(){
+	return mapheight;
 }

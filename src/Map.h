@@ -3,9 +3,15 @@
 using json=nlohmann::json;
 
 class Map{
-	public: 
+	public:
+		Map(); 
 		Map(json&);
-		void PrintMap();
+		~Map();
+		Map& operator=(Map&);
+		Map(Map&);
+		char GetElmt(int, int);
+		int GetWidth();
+		int GetHeight();
 	private:
 		char** elemen;
 		int mapwidth;
