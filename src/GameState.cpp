@@ -44,3 +44,59 @@ vector<Player> GameState::GetPlayer(){
 vector<Bomb> GameState::GetBomb(){
 	return bomb;
 }
+
+bool GameState::in_danger (Point P){
+	int i = 0;
+	bool cek = false;
+	Point Ptemp;
+	while(!cek && i<bomb.size()){
+		cek = in_area(P, bomb[i]);
+		i++;
+	}
+}
+
+bool GameState::bomb_in_row(Point P){
+	bool cek;
+	int i = 0;
+	Point Ptemp;
+	cek = false;
+	while(i < bomb.size() && !cek){
+		cek = in_area(P,bomb[i]);
+		i++;
+	}
+	return cek;
+}
+
+bool GameState::bomb_in_coloum(Point P){
+	bool cek = false;
+	int i = 0;
+	Point Ptemp;
+	while(i < bomb.size() && !cek){
+		Ptemp = bomb[i].GetPosisi();
+		if(P.GetOrdinat() == Ptemp.GetOrdinat()){
+			cek = true;
+		}
+		i++;
+	}
+	return cek;
+}
+
+bool GameState::in_area(Point P, Bomb B){
+	Point Ptemp = B.GetPosisi();
+	bool cekX = false;
+	bool cekY = false;
+	int batas1,batas2;
+
+	batas1 = Ptemp.GetAbsis() + B.GetJarak();
+	batas2 = Ptemp.GetAbsis() - B.GetJarak();
+	if(P.GetAbsis() >= batas2 && P.GetAbsis() <= batas1){
+		cekX=true;
+	}
+	batas1 = Ptemp.GetOrdinat() + B.GetJarak();
+	batas2 = Ptemp.GetOrdinat() - B.GetJarak();
+	if(P.GetOrdinat() >= batas2 && P.GetOrdinat() <= batas1){
+		cekY = true;
+	}
+
+	return (cekY && cekX);
+}

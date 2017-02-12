@@ -14,6 +14,10 @@ class GameState{
 		Map& GetMap();
 		vector<Player> GetPlayer();
 		vector<Bomb> GetBomb();
+		bool in_danger (Point P);
+		bool bomb_in_row(Point P);
+		bool bomb_in_coloum(Point P);
+		bool in_area(Point P, Bomb B);
 
 	private:
 		Map map;
