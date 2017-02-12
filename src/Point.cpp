@@ -13,10 +13,11 @@ Point::Point(int x, int y)
 }
 
 
-Point& Point::operator= (Point& B)
+Point& Point::operator= (const Point& B)
 {
 	this->x = B.x;
 	this->y = B.y;
+	return *this;
 }
 
 void Point::SetAbsis(int x){
