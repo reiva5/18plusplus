@@ -1,3 +1,4 @@
+#include <bits/stdc++.h>
 #include "GameState.h"
 
 using json=nlohmann::json;
@@ -53,15 +54,15 @@ vector<Bomb> GameState::GetBomb()
 	return bomb;
 }
 
-bool GameState::in_danger (Point P)
+bool GameState::in_danger ()
 {
-	int i = 0;
-	bool cek = false;
-	Point Ptemp;
-	while(!cek && i<bomb.size()){
-		cek = in_area(P, bomb[i]);
-		i++;
+	unsigned int i;
+	bool danger = false;
+	for (i = 0; i < bomb.size() && !danger; ++i)
+	{
+		
 	}
+	return danger;
 }
 
 bool GameState::bomb_in_row(Point P)
@@ -70,7 +71,8 @@ bool GameState::bomb_in_row(Point P)
 	int i = 0;
 	Point Ptemp;
 	cek = false;
-	while(i < bomb.size() && !cek){
+	while(i < bomb.size() && !cek)
+	{
 		cek = in_area(P,bomb[i]);
 		i++;
 	}

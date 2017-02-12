@@ -6,9 +6,11 @@
 class Player
 {
 	public:
+		Player();
 		Player(char, Point, int, int);
 		char GetKey();
 		Player& operator= (const Player& P);
+		Point GetPosisi();
 		int GetBombBag();
 		int GetBombRadius();
 		

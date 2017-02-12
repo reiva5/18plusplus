@@ -2,6 +2,15 @@
 #include "Player.h"
 using namespace std;
 
+Player::Player()
+{
+	Point pos(0,0);
+	this->playerKey = 'A';
+	this->posisi = pos;
+	this->bombBag = 1;
+	this->bombRadius = 1;
+}
+
 Player::Player(char playerKey, Point posisi, int bombBag, int bombRadius)
 {
 	this->playerKey = playerKey;
@@ -16,6 +25,12 @@ Player& Player::operator= (const Player& P)
 	this->posisi = posisi;
 	this->bombBag=bombBag;
 	this->bombRadius=bombRadius;
+	return (*this);
+}
+
+Point Player::GetPosisi()
+{
+	return posisi;
 }
 
 char Player::GetKey()
