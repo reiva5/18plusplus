@@ -56,21 +56,82 @@ vector<Bomb> GameState::GetBomb()
 
 bool GameState::in_danger(Point P)
 {
-	unsigned int i;
+	// KAMUS LOKAL
+	unsigned int i, j;
 	bool danger = false;
+	bool found = false;
+
+	// ALGORITMA
 	for (i = 0; i < bomb.size() && !danger; ++i)
 	{
-		if(bomb[i].GetPosisi().GetOrdinat()==P.GetOrdinat()){
-			if((bomb[i].GetPosisi().GetAbsis()+bomb[i].GetJarak()>=P.GetAbsis())||(bomb[i].GetPosisi().GetAbsis()-bomb[i].GetJarak()<=P.GetAbsis()))
-				danger=true;
+		// Pengecekan bomb berada satu ordinat 
+		if (bomb[i].GetPosisi().GetOrdinat() == P.GetOrdinat())
+		{
+			// Pengecekan radius bomb kurang dari jarak player ke bomb berdasarkan absis
+			if (abs(bomb[i].GetPosisi().GetAbsis() - P.GetAbsis()) <= bomb[i].GetJarak())
+			{
+				if (bomb[i].GetPosisi().GetAbsis() > P.GetAbsis())
+				{
+					danger = true;
+					for (j = bomb[i].GetPosisi().GetAbsis(); j >= P.GetAbsis() && danger; --j)
+					{
+						if (map.GetElmt(P.GetOrdinat(),j) == '+' || map.GetElmt(P.GetOrdinat(),j) == '#')
+						{
+							danger = false;
+						}
+					}
+				}
+
+				else
+				{
+					danger = true;
+					for (j = bomb[i].GetPosisi().GetAbsis(); j <= P.GetAbsis() && danger; ++j)
+					{
+						if (map.GetElmt(P.GetOrdinat(),j) == '+' || map.GetElmt(P.GetOrdinat(),j) == '#')
+						{
+							danger = false;
+						}
+					}
+				}
+			}
 		}
-		else if(bomb[i].GetPosisi().GetAbsis()==P.GetAbsis()){
-			if((bomb[i].GetPosisi().GetOrdinat()+bomb[i].GetJarak()>=P.GetOrdinat()) || (bomb[i].GetPosisi().GetOrdinat()-bomb[i].GetJarak()<=P.GetOrdinat()))
-				danger=true;
+
+		// Pengecekan bomb berada satu absis
+		else if (bomb[i].GetPosisi().GetAbsis() == P.GetAbsis())
+		{
+			// Pengecekan radius bomb kurang dari jarak player ke bomb berdasarkan ordinat
+			if (abs(bomb[i].GetPosisi().GetOrdinat() - P.GetOrdinat()) <= bomb[i].GetJarak())
+			{
+				if (bomb[i].GetPosisi().GetOrdinat() > P.GetOrdinat())
+				{
+					danger = true;
+					for (j = bomb[i].GetPosisi().GetOrdinat(); j >= P.GetOrdinat() && danger; --j)
+					{
+						if (map.GetElmt(j,P.GetAbsis()) == '+' || map.GetElmt(j,P.GetAbsis()) == '#')
+						{
+							danger = false;
+						}
+					}
+				}
+
+				else
+				{
+					danger = true;
+					for (j = bomb[i].GetPosisi().GetOrdinat(); j >= P.GetOrdinat() && danger; --j)
+					{
+						if (map.GetElmt(j,P.GetAbsis()) == '+' || map.GetElmt(j,P.GetAbsis()) == '#')
+						{
+							danger = false;
+						}
+					}
+				}
+			}
 		}
 	}
+
 	return danger;
 }
+
 
 bool GameState::bomb_in_row(Point P)
 {

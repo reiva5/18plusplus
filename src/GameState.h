@@ -20,6 +20,8 @@ class GameState
 		bool bomb_in_column(Point P);
 		bool in_area(Point P, Bomb B);
 		bool move_away(Point P, int& move);
+		int move_BFS(Point P);
+
 	private:
 		Map map;
 		vector<Player> player;
