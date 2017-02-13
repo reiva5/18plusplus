@@ -54,13 +54,20 @@ vector<Bomb> GameState::GetBomb()
 	return bomb;
 }
 
-bool GameState::in_danger ()
+bool GameState::in_danger(Point P)
 {
 	unsigned int i;
 	bool danger = false;
 	for (i = 0; i < bomb.size() && !danger; ++i)
 	{
-		
+		if(bomb[i].GetPosisi().GetOrdinat()==P.GetOrdinat()){
+			if((bomb[i].GetPosisi().GetAbsis()+bomb[i].GetJarak()>=P.GetAbsis())||(bomb[i].GetPosisi().GetAbsis()-bomb[i].GetJarak()<=P.GetAbsis()))
+				danger=true;
+		}
+		else if(bomb[i].GetPosisi().GetAbsis()==P.GetAbsis()){
+			if((bomb[i].GetPosisi().GetOrdinat()+bomb[i].GetJarak()>=P.GetOrdinat()) || (bomb[i].GetPosisi().GetOrdinat()-bomb[i].GetJarak()<=P.GetOrdinat()))
+				danger=true;
+		}
 	}
 	return danger;
 }
@@ -117,4 +124,135 @@ bool GameState::in_area(Point P, Bomb B)
 	}
 
 	return (cekY && cekX);
+}
+
+bool GameState::move_away(Point P, int& move){
+	int min=map.GetWidth(); //potensi
+
+	// potensi bug kalau di antara move ada dinding
+	// selalu menjauh dari bomb
+
+	for (int i=0; i<bomb.size(); i++){
+		if(bomb[i].GetPosisi().GetAbsis()+bomb[i].GetJarak()>=P.GetAbsis()){
+			if(bomb[i].GetPosisi().GetAbsis()+bomb[i].GetJarak()<map.GetWidth()){
+				if(bomb[i].GetPosisi().GetAbsis()+bomb[i].GetJarak()-P.GetAbsis()<min){
+					min=bomb[i].GetPosisi().GetAbsis()+bomb[i].GetJarak()-P.GetAbsis();
+					move=3;
+				}
+			}
+			else{
+				if(map.GetWidth()-1-P.GetAbsis()<min){
+					min=map.GetWidth()-1-P.GetAbsis();
+					move=3;
+				}
+			}
+		}
+		else if(bomb[i].GetPosisi().GetOrdinat()+bomb[i].GetJarak()>=P.GetOrdinat()){
+			if(bomb[i].GetPosisi().GetOrdinat()+bomb[i].GetJarak()<map.GetHeight()){
+				if(bomb[i].GetPosisi().GetOrdinat()+bomb[i].GetJarak()-P.GetOrdinat()<min){
+					min=bomb[i].GetPosisi().GetOrdinat()+bomb[i].GetJarak()-P.GetOrdinat();
+					move=4;
+				}
+			}
+			else{
+				if(map.GetHeight()-1-P.GetOrdinat()<min){
+					min=map.GetHeight()-1-P.GetOrdinat();
+					move=4;
+				}
+			}
+		}
+	}
+
+	// int bombMap[map.GetHeight()][map.GetWidth()];
+	// for(int i=0; imap.GetHeight(); i++){
+	// 	for(int j=0; j<map.GetWidth(); j++){
+	// 		bombMap[i][j]=99;
+	// 	}
+	// }
+
+	// for(int i=0; i<bomb.size(); i++){
+	// 	Point bombPos=bomb[i].GetPosisi();
+	// 	int rad=bomb[i].GetJarak();
+	// 	int i=0;
+	// 	while((i<=rad) && (bombPos.GetAbsis()+i<map.GetWidth())){
+	// 		if((map.GetElmt(bombPos.GetOrdinat(), bombPos.GetAbsis()+i)!='#') && (map.GetElmt(bombPos.GetOrdinat(), bombPos.GetAbsis()+i)!='+')){
+	// 			if(bombMap[bombPos.GetOrdinat()][bombPos.GetAbsis()+i]>bomb[i].GetDurasi()){
+	// 				bombMap[bombPos.GetOrdinat()][bombPos.GetAbsis()+i]=bomb[i].GetDurasi();
+	// 			}
+	// 		}
+	// 		else
+	// 			break;
+	// 		i++;
+	// 	}
+
+	// 	int i=0;
+	// 	while((i<=rad) && (bombPos.GetOrdinat()+i<map.GetHeight())){
+	// 		if((map.GetElmt(bombPos.GetOrdinat()+i, bombPos.GetAbsis())!='#') && (map.GetElmt(bombPos.GetOrdinat()+i, bombPos.GetAbsis())!='+')){
+	// 			if(bombMap[bombPos.GetOrdinat()+i][bombPos.GetAbsis()]>bomb[i].GetDurasi()){
+	// 				bombMap[bombPos.GetOrdinat()+i][bombPos.GetAbsis()]=bomb[i].GetDurasi()
+	// 			}
+	// 		}
+	// 		else
+	// 			break;
+	// 		i++;
+	// 	}
+
+	// 	int i=0;
+	// 	while((i<=rad) && (bombPos.GetAbsis()-i>0)){
+	// 		if((map.GetElmt(bombPos.GetOrdinat(), bombPos.GetAbsis()-i)!='#') && (map.GetElmt(bombPos.GetOrdinat(), bombPos.GetAbsis()-i)!='+')){
+	// 			if(bombMap[bombPos.GetOrdinat()][bombPos.GetAbsis()-i]>bomb[i].GetDurasi()){
+	// 				bombMap[bombPos.GetOrdinat()][bombPos.GetAbsis()-i]=bomb[i].GetDurasi()
+	// 			}
+	// 		}
+	// 		else
+	// 			break;
+	// 		i++;
+	// 	}
+
+	// 	int i=0;
+	// 	while((i<=rad) && (bombPos.GetOrdinat()-i>0)){
+	// 		if((map.GetElmt(bombPos.GetOrdinat()-i, bombPos.GetAbsis())!='#') && (map.GetElmt(bombPos.GetOrdinat()-i, bombPos.GetAbsis())!='+')){
+	// 			if(bombMap[bombPos.GetOrdinat()-i][bombPos.GetAbsis()]>bomb[i].GetDurasi()){
+	// 				bombMap[bombPos.GetOrdinat()-i][bombPos.GetAbsis()]=bomb[i].GetDurasi()
+	// 			}
+	// 		}
+	// 		else
+	// 			break;
+	// 		i++;
+	// 	}
+	// }
+
+	// Point playPos=P;
+	// int countmove=1;
+	// bool feasible=true;
+	// bool safe=false;
+	// while((feasible) && (!safe)){
+	// 	if((playPos.GetAbsis()+countmove<map.GetWidth()) && (bombMap[playPos.GetOrdinat()][playPos.GetAbsis()+countmove]>countmove) && (map.GetElmt(playPos.GetOrdinat(), playPos.GetAbsis()+countmove)==' ')){
+	// 		if(bombMap[playPos.GetOrdinat()][playPos.GetAbsis()+countmove]==99){
+	// 			safe=true;
+	// 		}
+	// 		else
+	// 			countmove++;
+	// 	}
+	// 	else
+	// 		feasible=false;
+	// }
+	// if(countmove<min)
+	// 	min=countmove;
+
+	// while((feasible) && (!safe)){
+	// 	if((playPos.GetAbsis()-countmove>0) && (bombMap[playPos.GetOrdinat()][playPos.GetAbsis()-countmove]>countmove) && (map.GetElmt(playPos.GetOrdinat(), playPos.GetAbsis()+countmove)==' ')){
+	// 		if(bombMap[playPos.GetOrdinat()][playPos.GetAbsis()+countmove]==99){
+	// 			safe=true;
+	// 		}
+	// 		else
+	// 			countmove++;
+	// 	}
+	// 	else
+	// 		feasible=false;
+	// }
+	// if(countmove<min)
+	// 	min=countmove;
+
+	
 }
