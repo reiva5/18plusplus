@@ -177,8 +177,8 @@ bool GameState::move_away(Point P, int& move){
 		int i=0;
 		while((i<=rad) && (bombPos.GetAbsis()+i<map.GetWidth())){
 			if((map.GetElmt(bombPos.GetOrdinat(), bombPos.GetAbsis()+i)!='#') && (map.GetElmt(bombPos.GetOrdinat(), bombPos.GetAbsis()+i)!='+')){
-				if(bombMap[bombPos.GetOrdinat()][bombPos.GetAbsis()+i]>bomb[i].GetDurasi()){
-					bombMap[bombPos.GetOrdinat()][bombPos.GetAbsis()+i]=bomb[i].GetDurasi();
+				if(bombMap[bombPos.GetOrdinat()][bombPos.GetAbsis()+i]>bomb[j].GetDurasi()){
+					bombMap[bombPos.GetOrdinat()][bombPos.GetAbsis()+i]=bomb[j].GetDurasi();
 				}
 			}
 			else
@@ -189,8 +189,8 @@ bool GameState::move_away(Point P, int& move){
 		i=0;
 		while((i<=rad) && (bombPos.GetOrdinat()+i<map.GetHeight())){
 			if((map.GetElmt(bombPos.GetOrdinat()+i, bombPos.GetAbsis())!='#') && (map.GetElmt(bombPos.GetOrdinat()+i, bombPos.GetAbsis())!='+')){
-				if(bombMap[bombPos.GetOrdinat()+i][bombPos.GetAbsis()]>bomb[i].GetDurasi()){
-					bombMap[bombPos.GetOrdinat()+i][bombPos.GetAbsis()]=bomb[i].GetDurasi();
+				if(bombMap[bombPos.GetOrdinat()+i][bombPos.GetAbsis()]>bomb[j].GetDurasi()){
+					bombMap[bombPos.GetOrdinat()+i][bombPos.GetAbsis()]=bomb[j].GetDurasi();
 				}
 			}
 			else
@@ -201,8 +201,8 @@ bool GameState::move_away(Point P, int& move){
 		i=0;
 		while((i<=rad) && (bombPos.GetAbsis()-i>0)){
 			if((map.GetElmt(bombPos.GetOrdinat(), bombPos.GetAbsis()-i)!='#') && (map.GetElmt(bombPos.GetOrdinat(), bombPos.GetAbsis()-i)!='+')){
-				if(bombMap[bombPos.GetOrdinat()][bombPos.GetAbsis()-i]>bomb[i].GetDurasi()){
-					bombMap[bombPos.GetOrdinat()][bombPos.GetAbsis()-i]=bomb[i].GetDurasi();
+				if(bombMap[bombPos.GetOrdinat()][bombPos.GetAbsis()-i]>bomb[j].GetDurasi()){
+					bombMap[bombPos.GetOrdinat()][bombPos.GetAbsis()-i]=bomb[j].GetDurasi();
 				}
 			}
 			else
@@ -213,8 +213,8 @@ bool GameState::move_away(Point P, int& move){
 		i=0;
 		while((i<=rad) && (bombPos.GetOrdinat()-i>0)){
 			if((map.GetElmt(bombPos.GetOrdinat()-i, bombPos.GetAbsis())!='#') && (map.GetElmt(bombPos.GetOrdinat()-i, bombPos.GetAbsis())!='+')){
-				if(bombMap[bombPos.GetOrdinat()-i][bombPos.GetAbsis()]>bomb[i].GetDurasi()){
-					bombMap[bombPos.GetOrdinat()-i][bombPos.GetAbsis()]=bomb[i].GetDurasi();
+				if(bombMap[bombPos.GetOrdinat()-i][bombPos.GetAbsis()]>bomb[j].GetDurasi()){
+					bombMap[bombPos.GetOrdinat()-i][bombPos.GetAbsis()]=bomb[j].GetDurasi();
 				}
 			}
 			else
@@ -236,9 +236,18 @@ bool GameState::move_away(Point P, int& move){
 	bool feasible=true;
 	bool safe=false;
 	while((feasible) && (!safe)){
-		if((playPos.GetAbsis()+countmove<map.GetWidth()) && (bombMap[playPos.GetOrdinat()][playPos.GetAbsis()+countmove]>countmove) && (map.GetElmt(playPos.GetOrdinat(), playPos.GetAbsis()+countmove)==' ')){
+		if((playPos.GetAbsis()+countmove<map.GetWidth()) && (bombMap[playPos.GetOrdinat()][playPos.GetAbsis()+countmove]>countmove) && 
+			(map.GetElmt(playPos.GetOrdinat(), playPos.GetAbsis()+countmove)!='#') && (map.GetElmt(playPos.GetOrdinat(), playPos.GetAbsis()+countmove)!='+')){
 			if(bombMap[playPos.GetOrdinat()][playPos.GetAbsis()+countmove]==99){
 				safe=true;
+			}
+			else if((map.GetElmt(playPos.GetOrdinat()-1, playPos.GetAbsis()+countmove)!='#') && (map.GetElmt(playPos.GetOrdinat()-1, playPos.GetAbsis()+countmove)!='+')){
+				safe=true;
+				countmove++;
+			}
+			else if((map.GetElmt(playPos.GetOrdinat()+1, playPos.GetAbsis()+countmove)!='#') && (map.GetElmt(playPos.GetOrdinat()+1, playPos.GetAbsis()+countmove)!='+')){
+				safe=true;
+				countmove++;
 			}
 			else
 				countmove++;
@@ -259,9 +268,18 @@ bool GameState::move_away(Point P, int& move){
 	feasible=true;
 	safe=false;
 	while((feasible) && (!safe)){
-		if((playPos.GetOrdinat()+countmove<map.GetHeight()) && (bombMap[playPos.GetOrdinat()+countmove][playPos.GetAbsis()]>countmove) && (map.GetElmt(playPos.GetOrdinat()+countmove, playPos.GetAbsis())==' ')){
+		if((playPos.GetOrdinat()+countmove<map.GetHeight()) && (bombMap[playPos.GetOrdinat()+countmove][playPos.GetAbsis()]>countmove) && 
+			(map.GetElmt(playPos.GetOrdinat()+countmove, playPos.GetAbsis())!='#') && (map.GetElmt(playPos.GetOrdinat()+countmove, playPos.GetAbsis())!='+')){
 			if(bombMap[playPos.GetOrdinat()+countmove][playPos.GetAbsis()]==99){
 				safe=true;
+			}
+			else if((map.GetElmt(playPos.GetOrdinat()+countmove, playPos.GetAbsis()-1)!='#') && (map.GetElmt(playPos.GetOrdinat()+countmove, playPos.GetAbsis()-1)!='+')){
+				safe=true;
+				countmove++;
+			}
+			else if((map.GetElmt(playPos.GetOrdinat()+countmove, playPos.GetAbsis()+1)!='#') && (map.GetElmt(playPos.GetOrdinat()+countmove, playPos.GetAbsis()+1)!='+')){
+				safe=true;
+				countmove++;
 			}
 			else
 				countmove++;
@@ -276,15 +294,24 @@ bool GameState::move_away(Point P, int& move){
 		min=countmove;
 	}
 	else
-		cout<<"down"<<endl;
+		cout<<" cant down"<<endl;
 
 	countmove=1;
 	feasible=true;
 	safe=false;
 	while((feasible) && (!safe)){
-		if((playPos.GetAbsis()-countmove>0) && (bombMap[playPos.GetOrdinat()][playPos.GetAbsis()-countmove]>countmove) && (map.GetElmt(playPos.GetOrdinat(), playPos.GetAbsis()-countmove)==' ')){
+		if((playPos.GetAbsis()-countmove>0) && (bombMap[playPos.GetOrdinat()][playPos.GetAbsis()-countmove]>countmove) && 
+			(map.GetElmt(playPos.GetOrdinat(), playPos.GetAbsis()-countmove)!='#') &&  (map.GetElmt(playPos.GetOrdinat(), playPos.GetAbsis()-countmove)!='+')){
 			if(bombMap[playPos.GetOrdinat()][playPos.GetAbsis()-countmove]==99){
 				safe=true;
+			}
+			else if((map.GetElmt(playPos.GetOrdinat()-1, playPos.GetAbsis()-countmove)!='#') &&  (map.GetElmt(playPos.GetOrdinat()-1, playPos.GetAbsis()-countmove)!='+')){
+				safe=true;
+				countmove++;
+			}
+			else if((map.GetElmt(playPos.GetOrdinat()+1, playPos.GetAbsis()-countmove)!='#') &&  (map.GetElmt(playPos.GetOrdinat()+1, playPos.GetAbsis()-countmove)!='+')){
+				safe=true;
+				countmove++;
 			}
 			else
 				countmove++;
@@ -305,9 +332,18 @@ bool GameState::move_away(Point P, int& move){
 	feasible=true;
 	safe=false;
 	while((feasible) && (!safe)){
-		if((playPos.GetOrdinat()-countmove>0) && (bombMap[playPos.GetOrdinat()-countmove][playPos.GetAbsis()]>countmove) && (map.GetElmt(playPos.GetOrdinat()-countmove, playPos.GetAbsis())==' ')){
+		if((playPos.GetOrdinat()-countmove>0) && (bombMap[playPos.GetOrdinat()-countmove][playPos.GetAbsis()]>countmove) && 
+			(map.GetElmt(playPos.GetOrdinat()-countmove, playPos.GetAbsis())!='#') && (map.GetElmt(playPos.GetOrdinat()-countmove, playPos.GetAbsis())!='+')){
 			if(bombMap[playPos.GetOrdinat()-countmove][playPos.GetAbsis()]==99){
 				safe=true;
+			}
+			else if((map.GetElmt(playPos.GetOrdinat()-countmove, playPos.GetAbsis()-1)!='#') && (map.GetElmt(playPos.GetOrdinat()-countmove, playPos.GetAbsis()-1)!='+')){
+				safe=true;
+				countmove++;
+			}
+			else if((map.GetElmt(playPos.GetOrdinat()-countmove, playPos.GetAbsis()+1)!='#') && (map.GetElmt(playPos.GetOrdinat()-countmove, playPos.GetAbsis()+1)!='+')){
+				safe=true;
+				countmove++;
 			}
 			else
 				countmove++;
