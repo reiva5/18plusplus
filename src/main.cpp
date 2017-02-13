@@ -20,14 +20,19 @@ void writeMoveFile(string filePath, int i)
 	}
 }
 
-int move(Point& P, Map& M){
+int move(Point& P, Map& M, GameState& state){
 	srand(time(NULL));
 
 	int i=rand()%4+1;
 	bool found=false;
+
+	Point up(P.GetAbsis(), P.GetOrdinat()-1);
+	Point down(P.GetAbsis(), P.GetOrdinat()+1);
+	Point right(P.GetAbsis()+1, P.GetOrdinat());
+	Point left(P.GetAbsis()-1, P.GetOrdinat());
 	while(!found){
 		if(i==2){
-			if((P.GetAbsis()-1>=0) && (M.GetElmt(P.GetOrdinat(), P.GetAbsis()-1)==' ')){
+			if((P.GetAbsis()-1>=0) && (M.GetElmt(P.GetOrdinat(), P.GetAbsis()-1)!='#') && ((M.GetElmt(P.GetOrdinat(), P.GetAbsis()-1)!='+'))&& (!state.in_danger(left))){
 				found=true;
 				return i;
 			}
@@ -37,7 +42,7 @@ int move(Point& P, Map& M){
 			}
 		}
 		else if(i==1){
-			if((P.GetOrdinat()-1>=0) && (M.GetElmt(P.GetOrdinat()-1, P.GetAbsis())==' ')){
+			if((P.GetOrdinat()-1>=0) && (M.GetElmt(P.GetOrdinat()-1, P.GetAbsis())!='#') && (M.GetElmt(P.GetOrdinat()-1, P.GetAbsis())!='+')&& (!state.in_danger(up))){
 				found=true;
 				return i;
 			}
@@ -47,7 +52,7 @@ int move(Point& P, Map& M){
 			}
 		}
 		else if(i==3){
-			if((P.GetAbsis()+1<M.GetWidth()) && (M.GetElmt(P.GetOrdinat(), P.GetAbsis()+1)==' ')){
+			if((P.GetAbsis()+1<M.GetWidth()) && (M.GetElmt(P.GetOrdinat(), P.GetAbsis()+1)!='#') && (M.GetElmt(P.GetOrdinat(), P.GetAbsis()+1)!='#')&& (!state.in_danger(right))){
 				found=true;
 				return i;
 			}
@@ -57,7 +62,7 @@ int move(Point& P, Map& M){
 			}
 		}
 		else if(i==4){
-			if((P.GetOrdinat()+1<M.GetHeight())&& (M.GetElmt(P.GetOrdinat()+1, P.GetAbsis())==' ')){
+			if((P.GetOrdinat()+1<M.GetHeight())&& (M.GetElmt(P.GetOrdinat()+1, P.GetAbsis())!='#') && (M.GetElmt(P.GetOrdinat()+1, P.GetAbsis())!='+')&& (!state.in_danger(down))){
 				found=true;
 				return i;
 			}
@@ -106,31 +111,35 @@ int main(int argc, char** argv){
 
 	int nextmove;
 	if(state.in_danger(playerPosisi)){
-		Point up(playerPosisi.GetAbsis(), playerPosisi.GetOrdinat()-1);
-		Point down(playerPosisi.GetAbsis(), playerPosisi.GetOrdinat()+1);
-		Point right(playerPosisi.GetAbsis()+1, playerPosisi.GetOrdinat());
-		Point left(playerPosisi.GetAbsis()-1, playerPosisi.GetOrdinat());
-		if((!state.in_danger(up)) && (m.GetElmt(playerPosisi.GetOrdinat()-1,playerPosisi.GetAbsis())==' ')){
-			nextmove=1;
-			cout<<"up"<<endl;
-		}
-		else if((!state.in_danger(down)) && (m.GetElmt(playerPosisi.GetOrdinat()+1,playerPosisi.GetAbsis())==' ')){
-			nextmove=4;
-			cout<<"down"<<endl;
-		}
-		else if((!state.in_danger(left)) && (m.GetElmt(playerPosisi.GetOrdinat(),playerPosisi.GetAbsis()-1)==' ')){
-			nextmove=2;
-			cout<<"left"<<endl;
-		}
-		else if((!state.in_danger(right)) && (m.GetElmt(playerPosisi.GetOrdinat(),playerPosisi.GetAbsis()+1)==' ')){
-			nextmove=3;
-			cout<<"right"<<endl;
-		}
-		else{
-			//harusnya bukan ini
-			nextmove=move(playerPosisi, m);	
-			cout<<"in_danger yes"<<endl;
-		}
+		// Point up(playerPosisi.GetAbsis(), playerPosisi.GetOrdinat()-1);
+		// Point down(playerPosisi.GetAbsis(), playerPosisi.GetOrdinat()+1);
+		// Point right(playerPosisi.GetAbsis()+1, playerPosisi.GetOrdinat());
+		// Point left(playerPosisi.GetAbsis()-1, playerPosisi.GetOrdinat());
+		// if((!state.in_danger(up)) && (m.GetElmt(playerPosisi.GetOrdinat()-1,playerPosisi.GetAbsis())==' ')){
+		// 	nextmove=1;
+		// 	cout<<"up"<<endl;
+		// }
+		// else if((!state.in_danger(down)) && (m.GetElmt(playerPosisi.GetOrdinat()+1,playerPosisi.GetAbsis())==' ')){
+		// 	nextmove=4;
+		// 	cout<<"down"<<endl;
+		// }
+		// else if((!state.in_danger(left)) && (m.GetElmt(playerPosisi.GetOrdinat(),playerPosisi.GetAbsis()-1)==' ')){
+		// 	nextmove=2;
+		// 	cout<<"left"<<endl;
+		// }
+		// else if((!state.in_danger(right)) && (m.GetElmt(playerPosisi.GetOrdinat(),playerPosisi.GetAbsis()+1)==' ')){
+		// 	nextmove=3;
+		// 	cout<<"right"<<endl;
+		// }
+		// else{
+		// 	//harusnya bukan ini
+		// 	nextmove=move(playerPosisi, m);	
+		// 	cout<<"in_danger yes"<<endl;
+		// }
+		if(state.move_away(playerPosisi, nextmove))
+			cout<<"cant moveaway"<<endl;
+		else
+			nextmove=move(playerPosisi, m, state);
 	}
 	else{
 		if(((m.GetElmt(playerPosisi.GetOrdinat(), playerPosisi.GetAbsis()-1)=='+')||(m.GetElmt(playerPosisi.GetOrdinat()-1, playerPosisi.GetAbsis())=='+')
@@ -140,7 +149,7 @@ int main(int argc, char** argv){
 			cout<<"drop bomb"<<endl;
 		}
 		else{
-			nextmove=move(playerPosisi, m);	
+			nextmove=move(playerPosisi, m, state);	
 			cout<<"free move"<<endl;
 		}
 
