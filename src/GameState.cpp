@@ -54,6 +54,62 @@ vector<Bomb> GameState::GetBomb()
 	return bomb;
 }
 
+bool GameState::wall_in_row(Point P1, Point P2)
+{
+	bool found=false;
+	int i = 0;
+	if (P1.GetAbsis() > P2.GetAbsis())
+	{
+		for (i = P1.GetAbsis(); i >= P2.GetAbsis() && (!found); --i)
+		{
+			if (map.GetElmt(P1.GetOrdinat(),i) == '+' || map.GetElmt(P2.GetOrdinat(),i) == '#')
+			{
+				found = true;
+			}
+		}
+	}
+
+	else
+	{
+		for (i = P1.GetAbsis(); i <= P2.GetAbsis() && (!found); ++i)
+		{
+			if (map.GetElmt(P1.GetOrdinat(),i) == '+' || map.GetElmt(P1.GetOrdinat(),i) == '#')
+			{
+				found=true;
+			}
+		}
+	}
+	return found;
+}
+
+bool GameState::wall_in_column(Point P1, Point P2)
+{
+	bool cek = false;
+	int j = 0;
+	if (P1.GetOrdinat() > P2.GetOrdinat())
+	{
+		for (j = P1.GetOrdinat(); j >= P2.GetOrdinat() && (!cek); --j)
+		{
+			if (map.GetElmt(j,P1.GetAbsis()) == '+' || map.GetElmt(j,P1.GetAbsis()) == '#')
+			{
+				cek=true;
+			}
+		}
+	}
+
+	else
+	{
+		for (j = P1.GetOrdinat(); j >= P2.GetOrdinat() && (!cek); --j)
+		{
+			if (map.GetElmt(j,P1.GetAbsis()) == '+' || map.GetElmt(j,P1.GetAbsis()) == '#')
+			{
+				cek=true;
+			}
+		}
+	}
+	return cek;
+}
+
 bool GameState::in_danger(Point P)
 {
 	// KAMUS LOKAL
@@ -70,29 +126,7 @@ bool GameState::in_danger(Point P)
 			// Pengecekan radius bomb kurang dari jarak player ke bomb berdasarkan absis
 			if (abs(bomb[i].GetPosisi().GetAbsis() - P.GetAbsis()) <= bomb[i].GetJarak())
 			{
-				if (bomb[i].GetPosisi().GetAbsis() > P.GetAbsis())
-				{
-					danger = true;
-					for (j = bomb[i].GetPosisi().GetAbsis(); j >= P.GetAbsis() && danger; --j)
-					{
-						if (map.GetElmt(P.GetOrdinat(),j) == '+' || map.GetElmt(P.GetOrdinat(),j) == '#')
-						{
-							danger = false;
-						}
-					}
-				}
-
-				else
-				{
-					danger = true;
-					for (j = bomb[i].GetPosisi().GetAbsis(); j <= P.GetAbsis() && danger; ++j)
-					{
-						if (map.GetElmt(P.GetOrdinat(),j) == '+' || map.GetElmt(P.GetOrdinat(),j) == '#')
-						{
-							danger = false;
-						}
-					}
-				}
+				danger= (!wall_in_row(bomb[i].GetPosisi(), P));
 			}
 		}
 
@@ -102,29 +136,7 @@ bool GameState::in_danger(Point P)
 			// Pengecekan radius bomb kurang dari jarak player ke bomb berdasarkan ordinat
 			if (abs(bomb[i].GetPosisi().GetOrdinat() - P.GetOrdinat()) <= bomb[i].GetJarak())
 			{
-				if (bomb[i].GetPosisi().GetOrdinat() > P.GetOrdinat())
-				{
-					danger = true;
-					for (j = bomb[i].GetPosisi().GetOrdinat(); j >= P.GetOrdinat() && danger; --j)
-					{
-						if (map.GetElmt(j,P.GetAbsis()) == '+' || map.GetElmt(j,P.GetAbsis()) == '#')
-						{
-							danger = false;
-						}
-					}
-				}
-
-				else
-				{
-					danger = true;
-					for (j = bomb[i].GetPosisi().GetOrdinat(); j >= P.GetOrdinat() && danger; --j)
-					{
-						if (map.GetElmt(j,P.GetAbsis()) == '+' || map.GetElmt(j,P.GetAbsis()) == '#')
-						{
-							danger = false;
-						}
-					}
-				}
+				danger= (!wall_in_column(bomb[i].GetPosisi(), P));
 			}
 		}
 	}
@@ -132,37 +144,6 @@ bool GameState::in_danger(Point P)
 	return danger;
 }
 
-
-bool GameState::bomb_in_row(Point P)
-{
-	bool cek;
-	int i = 0;
-	Point Ptemp;
-	cek = false;
-	while(i < bomb.size() && !cek)
-	{
-		cek = in_area(P,bomb[i]);
-		i++;
-	}
-	return cek;
-}
-
-bool GameState::bomb_in_column(Point P)
-{
-	bool cek = false;
-	int i = 0;
-	Point Ptemp;
-	while(i < bomb.size() && !cek)
-	{
-		Ptemp = bomb[i].GetPosisi();
-		if(P.GetOrdinat() == Ptemp.GetOrdinat())
-		{
-			cek = true;
-		}
-		i++;
-	}
-	return cek;
-}
 
 bool GameState::in_area(Point P, Bomb B)
 {
@@ -398,12 +379,13 @@ bool GameState::move_away(Point P, int& move){
 		move=mv;
 		return true;
 	}
-	else
+	else{
 		return false;
+	}
 }
 
 bool GameState::get_power_up(Point P, int& move){
-	const int rad=3;
+	const int rad=7;
 	int start_row;
 	int start_col;
 	int last_row;
@@ -440,7 +422,7 @@ bool GameState::get_power_up(Point P, int& move){
 		if(map.GetElmt(y,x)=='!'){
 			found=true;
 		}
-		else if((map.GetElmt(y,x)=='#') || (map.GetElmt(y,x)=='+'))
+		else if((map.GetElmt(y,x)=='#') || (map.GetElmt(y,x)=='+') || (in_danger(Point(x,y))))
 			feasible=false;
 		else if(map.GetElmt(y-1, x)=='!'){
 			countmove++;
@@ -472,7 +454,7 @@ bool GameState::get_power_up(Point P, int& move){
 		if(map.GetElmt(y,x)=='!'){
 			found=true;
 		}
-		else if((map.GetElmt(y,x)=='#') || (map.GetElmt(y,x)=='+'))
+		else if((map.GetElmt(y,x)=='#') || (map.GetElmt(y,x)=='+') ||(in_danger(Point(x,y))))
 			feasible=false;
 		else if(map.GetElmt(y-1, x)=='!'){
 			countmove++;
@@ -504,7 +486,7 @@ bool GameState::get_power_up(Point P, int& move){
 		if(map.GetElmt(y,x)=='!'){
 			found=true;
 		}
-		else if((map.GetElmt(y,x)=='#') || (map.GetElmt(y,x)=='+'))
+		else if((map.GetElmt(y,x)=='#') || (map.GetElmt(y,x)=='+') || (in_danger(Point(x,y))))
 			feasible=false;
 		else if(map.GetElmt(y, x-1)=='!'){
 			countmove++;
@@ -536,7 +518,7 @@ bool GameState::get_power_up(Point P, int& move){
 		if(map.GetElmt(y,x)=='!'){
 			found=true;
 		}
-		else if((map.GetElmt(y,x)=='#') || (map.GetElmt(y,x)=='+'))
+		else if((map.GetElmt(y,x)=='#') || (map.GetElmt(y,x)=='+') || (in_danger(Point(x,y))))
 			feasible=false;
 		else if(map.GetElmt(y, x-1)=='!'){
 			countmove++;
@@ -568,7 +550,7 @@ bool GameState::get_power_up(Point P, int& move){
 }
 
 bool GameState::get_wall(Point P, int& move){
-	const int rad=6;
+	const int rad=10;
 	int start_row;
 	int start_col;
 	int last_row;
@@ -734,4 +716,54 @@ bool GameState::get_wall(Point P, int& move){
 	}
 	else
 		return false;
+}
+
+int GameState::get_near_bomb(Point P)
+{
+	bool found=false;
+	int move=0;
+
+	for(int i=0; i<bomb.size() && (!found); i++){
+		if(P.GetAbsis()==bomb[i].GetPosisi().GetAbsis()){
+			if (abs(bomb[i].GetPosisi().GetAbsis() - P.GetAbsis()) <= bomb[i].GetJarak())
+			{
+				if(!wall_in_column(bomb[i].GetPosisi(), P)){
+					if (bomb[i].GetPosisi().GetAbsis() > P.GetAbsis())
+						move=3;
+					else
+						move=2;
+				}
+			}
+		}
+		else if(P.GetOrdinat()==bomb[i].GetPosisi().GetOrdinat()){
+			if (abs(bomb[i].GetPosisi().GetOrdinat() - P.GetOrdinat()) <= bomb[i].GetJarak())
+			{
+				if(!wall_in_row(bomb[i].GetPosisi(), P)){
+					if (bomb[i].GetPosisi().GetOrdinat() > P.GetOrdinat())
+						move=1;
+					else
+						move=4;
+				}
+			}
+		}
+	}
+	return move;
+}
+
+bool GameState::other_in_my_reach(char playerKey, Point P, int rad)
+{
+	bool found=false;
+	for(int i=0; (i<player.size()) && (!found); i++){
+		if(player[i].GetKey()!=playerKey){
+			if(player[i].GetPosisi().GetAbsis()==P.GetAbsis()){
+				if((abs(player[i].GetPosisi().GetOrdinat()-P.GetOrdinat())<=rad) &&(!wall_in_column(player[i].GetPosisi(), P)))
+					found=true;
+			}
+			else if(player[i].GetPosisi().GetOrdinat()==P.GetOrdinat()){
+				if((abs(player[i].GetPosisi().GetAbsis()-P.GetAbsis())<=rad)&& (!wall_in_row(player[i].GetPosisi(), P)))
+					found=true;
+			}
+		}
+	}
+	return found;
 }

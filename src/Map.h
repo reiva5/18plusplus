@@ -1,4 +1,5 @@
 #include "json.hpp"
+#include "Point.h"
 
 using json=nlohmann::json;
 
@@ -12,6 +13,7 @@ class Map{
 		char GetElmt(int, int);
 		int GetWidth();
 		int GetHeight();
+		bool IsBreakable(Point);
 	private:
 		char** elemen;
 		int mapwidth;

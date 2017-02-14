@@ -130,3 +130,9 @@ int Map::GetHeight()
 {
 	return mapheight;
 }
+
+bool Map::IsBreakable(Point P)
+{
+	return ((GetElmt(P.GetOrdinat(), P.GetAbsis()-1)=='+')||(GetElmt(P.GetOrdinat()-1, P.GetAbsis())=='+')
+			||(GetElmt(P.GetOrdinat(), P.GetAbsis()+1)=='+')||(GetElmt(P.GetOrdinat()+1, P.GetAbsis())=='+'));
+}

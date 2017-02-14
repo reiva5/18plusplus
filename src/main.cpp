@@ -20,7 +20,7 @@ void writeMoveFile(string filePath, int i)
 	}
 }
 
-int move(Point& P, Map& M, GameState& state){
+bool move(Point& P, Map& M, GameState& state, int& nextmove){
 	srand(time(NULL));
 
 	int i=rand()%4+1;
@@ -30,11 +30,12 @@ int move(Point& P, Map& M, GameState& state){
 	Point down(P.GetAbsis(), P.GetOrdinat()+1);
 	Point right(P.GetAbsis()+1, P.GetOrdinat());
 	Point left(P.GetAbsis()-1, P.GetOrdinat());
-	while(!found){
+	int count=0;
+	while((!found) && (count<4)){
 		if(i==2){
 			if((P.GetAbsis()-1>=0) && (M.GetElmt(P.GetOrdinat(), P.GetAbsis()-1)!='#') && ((M.GetElmt(P.GetOrdinat(), P.GetAbsis()-1)!='+'))&& (!state.in_danger(left))){
 				found=true;
-				return i;
+				nextmove=i;
 			}
 			else{
 				i++;
@@ -44,7 +45,7 @@ int move(Point& P, Map& M, GameState& state){
 		else if(i==1){
 			if((P.GetOrdinat()-1>=0) && (M.GetElmt(P.GetOrdinat()-1, P.GetAbsis())!='#') && (M.GetElmt(P.GetOrdinat()-1, P.GetAbsis())!='+')&& (!state.in_danger(up))){
 				found=true;
-				return i;
+				nextmove=i;
 			}
 			else{ 
 				i++;
@@ -54,7 +55,7 @@ int move(Point& P, Map& M, GameState& state){
 		else if(i==3){
 			if((P.GetAbsis()+1<M.GetWidth()) && (M.GetElmt(P.GetOrdinat(), P.GetAbsis()+1)!='#') && (M.GetElmt(P.GetOrdinat(), P.GetAbsis()+1)!='#')&& (!state.in_danger(right))){
 				found=true;
-				return i;
+				nextmove=i;
 			}
 			else{
 				i++;
@@ -64,14 +65,16 @@ int move(Point& P, Map& M, GameState& state){
 		else if(i==4){
 			if((P.GetOrdinat()+1<M.GetHeight())&& (M.GetElmt(P.GetOrdinat()+1, P.GetAbsis())!='#') && (M.GetElmt(P.GetOrdinat()+1, P.GetAbsis())!='+')&& (!state.in_danger(down))){
 				found=true;
-				return i;
+				nextmove=i;
 			}
 			else{
 				i=1;
 				cout<<"not down"<<endl;
 			}
 		}
+		count++;
 	}
+	return found;
 }
 
 int main(int argc, char** argv){
@@ -99,10 +102,12 @@ int main(int argc, char** argv){
 	Point playerPosisi;
 	int i=0;
 	int myBombBag;
+	int myBombRad;
 	while(!found){
 		if(p[i].GetKey()==playerKey){
 			playerPosisi=p[i].GetPosisi();
 			myBombBag=p[i].GetBombBag();
+			myBombRad=p[i].GetBombRadius();
 			found=true;
 		}
 		else
@@ -111,25 +116,32 @@ int main(int argc, char** argv){
 
 	int nextmove;
 	if(state.in_danger(playerPosisi)){
+		cout<<"im in danger"<<endl;
 		if(state.move_away(playerPosisi, nextmove))
 			cout<<"moveaway"<<endl;
-		else
-			nextmove=move(playerPosisi, m, state);
+		else{
+			nextmove=state.get_near_bomb(playerPosisi);
+		}
+			
 	}
 	else{
 		if(state.get_power_up(playerPosisi, nextmove))
 			cout<<"getting power up"<<endl;
-		else if(((m.GetElmt(playerPosisi.GetOrdinat(), playerPosisi.GetAbsis()-1)=='+')||(m.GetElmt(playerPosisi.GetOrdinat()-1, playerPosisi.GetAbsis())=='+')
-			||(m.GetElmt(playerPosisi.GetOrdinat(), playerPosisi.GetAbsis()+1)=='+')||(m.GetElmt(playerPosisi.GetOrdinat()+1, playerPosisi.GetAbsis())=='+'))
-			&&(myBombBag>0)){
+		else if(state.GetMap().IsBreakable(playerPosisi)&&(myBombBag>0)){
 			nextmove=5;
 			cout<<"drop bomb"<<endl;
 		}
+		else if(state.other_in_my_reach(playerKey, playerPosisi, myBombRad)){
+			nextmove=5;
+			cout<<"killing other"<<endl;
+		}
 		else if(state.get_wall(playerPosisi, nextmove))
 			cout<<"getting wall"<<endl;
-		else{
-			nextmove=move(playerPosisi, m, state);	
+		else if(move(playerPosisi, m, state, nextmove))
 			cout<<"free move"<<endl;
+		else{
+			nextmove=-1;	
+			cout<<"silent"<<endl;
 		}
 
 	}
