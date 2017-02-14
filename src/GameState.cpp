@@ -188,42 +188,7 @@ bool GameState::in_area(Point P, Bomb B)
 }
 
 bool GameState::move_away(Point P, int& move){
-	int min=map.GetWidth(); //potensi
-
-	// potensi bug kalau di antara move ada dinding
-	// selalu menjauh dari bomb
-
-	// for (int i=0; i<bomb.size(); i++){
-	// 	if(bomb[i].GetPosisi().GetAbsis()+bomb[i].GetJarak()>=P.GetAbsis()){
-	// 		if(bomb[i].GetPosisi().GetAbsis()+bomb[i].GetJarak()<map.GetWidth()){
-	// 			if(bomb[i].GetPosisi().GetAbsis()+bomb[i].GetJarak()-P.GetAbsis()<min){
-	// 				min=bomb[i].GetPosisi().GetAbsis()+bomb[i].GetJarak()-P.GetAbsis();
-	// 				move=3;
-	// 			}
-	// 		}
-	// 		else{
-	// 			if(map.GetWidth()-1-P.GetAbsis()<min){
-	// 				min=map.GetWidth()-1-P.GetAbsis();
-	// 				move=3;
-	// 			}
-	// 		}
-	// 	}
-	// 	else if(bomb[i].GetPosisi().GetOrdinat()+bomb[i].GetJarak()>=P.GetOrdinat()){
-	// 		if(bomb[i].GetPosisi().GetOrdinat()+bomb[i].GetJarak()<map.GetHeight()){
-	// 			if(bomb[i].GetPosisi().GetOrdinat()+bomb[i].GetJarak()-P.GetOrdinat()<min){
-	// 				min=bomb[i].GetPosisi().GetOrdinat()+bomb[i].GetJarak()-P.GetOrdinat();
-	// 				move=4;
-	// 			}
-	// 		}
-	// 		else{
-	// 			if(map.GetHeight()-1-P.GetOrdinat()<min){
-	// 				min=map.GetHeight()-1-P.GetOrdinat();
-	// 				move=4;
-	// 			}
-	// 		}
-	// 	}
-	// }
-
+	int min=map.GetWidth(); 
 	int bombMap[map.GetHeight()][map.GetWidth()];
 
 	for(int i=0; i<map.GetHeight(); i++){
@@ -302,11 +267,13 @@ bool GameState::move_away(Point P, int& move){
 			if(bombMap[playPos.GetOrdinat()][playPos.GetAbsis()+countmove]==99){
 				safe=true;
 			}
-			else if((map.GetElmt(playPos.GetOrdinat()-1, playPos.GetAbsis()+countmove)!='#') && (map.GetElmt(playPos.GetOrdinat()-1, playPos.GetAbsis()+countmove)!='+')){
+			else if((map.GetElmt(playPos.GetOrdinat()-1, playPos.GetAbsis()+countmove)!='#') && (map.GetElmt(playPos.GetOrdinat()-1, playPos.GetAbsis()+countmove)!='+')
+				&& (bombMap[playPos.GetOrdinat()-1][playPos.GetAbsis()+countmove]==99)){
 				safe=true;
 				countmove++;
 			}
-			else if((map.GetElmt(playPos.GetOrdinat()+1, playPos.GetAbsis()+countmove)!='#') && (map.GetElmt(playPos.GetOrdinat()+1, playPos.GetAbsis()+countmove)!='+')){
+			else if((map.GetElmt(playPos.GetOrdinat()+1, playPos.GetAbsis()+countmove)!='#') && (map.GetElmt(playPos.GetOrdinat()+1, playPos.GetAbsis()+countmove)!='+')
+				&& (bombMap[playPos.GetOrdinat()+1][playPos.GetAbsis()+countmove]==99)){
 				safe=true;
 				countmove++;
 			}
@@ -334,11 +301,13 @@ bool GameState::move_away(Point P, int& move){
 			if(bombMap[playPos.GetOrdinat()+countmove][playPos.GetAbsis()]==99){
 				safe=true;
 			}
-			else if((map.GetElmt(playPos.GetOrdinat()+countmove, playPos.GetAbsis()-1)!='#') && (map.GetElmt(playPos.GetOrdinat()+countmove, playPos.GetAbsis()-1)!='+')){
+			else if((map.GetElmt(playPos.GetOrdinat()+countmove, playPos.GetAbsis()-1)!='#') && (map.GetElmt(playPos.GetOrdinat()+countmove, playPos.GetAbsis()-1)!='+')
+				&& (bombMap[playPos.GetOrdinat()+countmove][playPos.GetAbsis()-1]==99)){
 				safe=true;
 				countmove++;
 			}
-			else if((map.GetElmt(playPos.GetOrdinat()+countmove, playPos.GetAbsis()+1)!='#') && (map.GetElmt(playPos.GetOrdinat()+countmove, playPos.GetAbsis()+1)!='+')){
+			else if((map.GetElmt(playPos.GetOrdinat()+countmove, playPos.GetAbsis()+1)!='#') && (map.GetElmt(playPos.GetOrdinat()+countmove, playPos.GetAbsis()+1)!='+')
+				&& (bombMap[playPos.GetOrdinat()+countmove][playPos.GetAbsis()+1]==99)){
 				safe=true;
 				countmove++;
 			}
@@ -366,11 +335,13 @@ bool GameState::move_away(Point P, int& move){
 			if(bombMap[playPos.GetOrdinat()][playPos.GetAbsis()-countmove]==99){
 				safe=true;
 			}
-			else if((map.GetElmt(playPos.GetOrdinat()-1, playPos.GetAbsis()-countmove)!='#') &&  (map.GetElmt(playPos.GetOrdinat()-1, playPos.GetAbsis()-countmove)!='+')){
+			else if((map.GetElmt(playPos.GetOrdinat()-1, playPos.GetAbsis()-countmove)!='#') &&  (map.GetElmt(playPos.GetOrdinat()-1, playPos.GetAbsis()-countmove)!='+')
+				&& (bombMap[playPos.GetOrdinat()-1][playPos.GetAbsis()-countmove]==99)){
 				safe=true;
 				countmove++;
 			}
-			else if((map.GetElmt(playPos.GetOrdinat()+1, playPos.GetAbsis()-countmove)!='#') &&  (map.GetElmt(playPos.GetOrdinat()+1, playPos.GetAbsis()-countmove)!='+')){
+			else if((map.GetElmt(playPos.GetOrdinat()+1, playPos.GetAbsis()-countmove)!='#') &&  (map.GetElmt(playPos.GetOrdinat()+1, playPos.GetAbsis()-countmove)!='+')
+				&& (bombMap[playPos.GetOrdinat()+1][playPos.GetAbsis()-countmove]==99)){
 				safe=true;
 				countmove++;
 			}
@@ -398,11 +369,13 @@ bool GameState::move_away(Point P, int& move){
 			if(bombMap[playPos.GetOrdinat()-countmove][playPos.GetAbsis()]==99){
 				safe=true;
 			}
-			else if((map.GetElmt(playPos.GetOrdinat()-countmove, playPos.GetAbsis()-1)!='#') && (map.GetElmt(playPos.GetOrdinat()-countmove, playPos.GetAbsis()-1)!='+')){
+			else if((map.GetElmt(playPos.GetOrdinat()-countmove, playPos.GetAbsis()-1)!='#') && (map.GetElmt(playPos.GetOrdinat()-countmove, playPos.GetAbsis()-1)!='+')
+				&& (bombMap[playPos.GetOrdinat()-countmove][playPos.GetAbsis()-1]==99)){
 				safe=true;
 				countmove++;
 			}
-			else if((map.GetElmt(playPos.GetOrdinat()-countmove, playPos.GetAbsis()+1)!='#') && (map.GetElmt(playPos.GetOrdinat()-countmove, playPos.GetAbsis()+1)!='+')){
+			else if((map.GetElmt(playPos.GetOrdinat()-countmove, playPos.GetAbsis()+1)!='#') && (map.GetElmt(playPos.GetOrdinat()-countmove, playPos.GetAbsis()+1)!='+')
+				&& (bombMap[playPos.GetOrdinat()-countmove][playPos.GetAbsis()+1]==99)){
 				safe=true;
 				countmove++;
 			}
@@ -420,6 +393,340 @@ bool GameState::move_away(Point P, int& move){
 	}
 	else
 		cout<<"cant up"<<endl;
+
+	if(min!=map.GetWidth()){
+		move=mv;
+		return true;
+	}
+	else
+		return false;
+}
+
+bool GameState::get_power_up(Point P, int& move){
+	const int rad=3;
+	int start_row;
+	int start_col;
+	int last_row;
+	int last_col;
+	int mv;
+
+	if(P.GetOrdinat()-rad>0)
+		start_row=P.GetOrdinat()-rad;
+	else
+		start_row=1;
+
+	if(P.GetOrdinat()+rad<map.GetHeight())
+		last_row=P.GetOrdinat()+rad;
+	else
+		last_row=map.GetHeight()-1;
+
+	if(P.GetAbsis()-rad>0)
+		start_col=P.GetAbsis()-rad;
+	else
+		start_col=1;
+
+	if(P.GetAbsis()+rad<map.GetWidth())
+		last_col=P.GetAbsis()+rad;
+	else
+		last_col=map.GetWidth()-1;
+
+	int min=map.GetWidth();
+	int x=P.GetAbsis()-1;
+	int y=P.GetOrdinat();
+	bool found=false;
+	bool feasible=true;
+	int countmove=1;
+	while((x>=start_col) && (!found) && feasible){
+		if(map.GetElmt(y,x)=='!'){
+			found=true;
+		}
+		else if((map.GetElmt(y,x)=='#') || (map.GetElmt(y,x)=='+'))
+			feasible=false;
+		else if(map.GetElmt(y-1, x)=='!'){
+			countmove++;
+			found=true;
+		}
+		else if(map.GetElmt(y+1, x)=='!'){
+			countmove++;
+			found=true;
+		}
+		else{
+			countmove++;
+			x--;
+		}
+	}
+	if(found){
+		if(countmove<min){
+			min=countmove;
+			mv=2;
+			cout<<"left"<<endl;
+		}
+	}
+
+	x=P.GetAbsis()+1;
+	y=P.GetOrdinat();
+	found=false;
+	feasible=true;
+	countmove=1;
+	while((x<=last_col) && (!found) && feasible){
+		if(map.GetElmt(y,x)=='!'){
+			found=true;
+		}
+		else if((map.GetElmt(y,x)=='#') || (map.GetElmt(y,x)=='+'))
+			feasible=false;
+		else if(map.GetElmt(y-1, x)=='!'){
+			countmove++;
+			found=true;
+		}
+		else if(map.GetElmt(y+1, x)=='!'){
+			countmove++;
+			found=true;
+		}
+		else{
+			countmove++;
+			x++;
+		}
+	}
+	if(found){
+		if(countmove<min){
+			min=countmove;
+			mv=3;
+			cout<<"right"<<endl;
+		}
+	}
+
+	x=P.GetAbsis();
+	y=P.GetOrdinat()-1;
+	found=false;
+	feasible=true;
+	countmove=1;
+	while((y>start_row) && (!found) && feasible){
+		if(map.GetElmt(y,x)=='!'){
+			found=true;
+		}
+		else if((map.GetElmt(y,x)=='#') || (map.GetElmt(y,x)=='+'))
+			feasible=false;
+		else if(map.GetElmt(y, x-1)=='!'){
+			countmove++;
+			found=true;
+		}
+		else if(map.GetElmt(y, x+1)=='!'){
+			countmove++;
+			found=true;
+		}
+		else{
+			countmove++;
+			y--;
+			cout<<"up"<<endl;
+		}
+	}
+	if(found){
+		if(countmove<min){
+			min=countmove;
+			mv=1;
+		}
+	}
+
+	x=P.GetAbsis();
+	y=P.GetOrdinat()+1;
+	found=false;
+	feasible=true;
+	countmove=1;
+	while((y<=last_row) && (!found) && feasible){
+		if(map.GetElmt(y,x)=='!'){
+			found=true;
+		}
+		else if((map.GetElmt(y,x)=='#') || (map.GetElmt(y,x)=='+'))
+			feasible=false;
+		else if(map.GetElmt(y, x-1)=='!'){
+			countmove++;
+			found=true;
+		}
+		else if(map.GetElmt(y, x+1)=='!'){
+			countmove++;
+			found=true;
+		}
+		else{
+			countmove++;
+			y++;
+		}
+	}
+	if(found){
+		if(countmove<min){
+			min=countmove;
+			mv=4;
+			cout<<"down"<<endl;
+		}
+	}
+
+	if(min!=map.GetWidth()){
+		move=mv;
+		return true;
+	}
+	else
+		return false;
+}
+
+bool GameState::get_wall(Point P, int& move){
+	const int rad=6;
+	int start_row;
+	int start_col;
+	int last_row;
+	int last_col;
+	int mv;
+
+	if(P.GetOrdinat()-rad>0)
+		start_row=P.GetOrdinat()-rad;
+	else
+		start_row=1;
+
+	if(P.GetOrdinat()+rad<map.GetHeight())
+		last_row=P.GetOrdinat()+rad;
+	else
+		last_row=map.GetHeight()-1;
+
+	if(P.GetAbsis()-rad>0)
+		start_col=P.GetAbsis()-rad;
+	else
+		start_col=1;
+
+	if(P.GetAbsis()+rad<map.GetWidth())
+		last_col=P.GetAbsis()+rad;
+	else
+		last_col=map.GetWidth()-1;
+
+	int min=map.GetWidth();
+	int x=P.GetAbsis()-1;
+	int y=P.GetOrdinat();
+	bool found=false;
+	bool feasible=true;
+	int countmove=1;
+	while((x>=start_col) && (!found) && feasible){
+		Point p(x,y);
+		if(map.GetElmt(y,x)=='+'){
+			found=true;
+		}
+		else if((map.GetElmt(y,x)=='#') || (in_danger(p)))
+			feasible=false;
+		else if(map.GetElmt(y-1, x)=='+'){
+			countmove++;
+			found=true;
+		}
+		else if(map.GetElmt(y+1, x)=='+'){
+			countmove++;
+			found=true;
+		}
+		else{
+			countmove++;
+			x--;
+		}
+	}
+	if(found){
+		if(countmove<min){
+			min=countmove;
+			mv=2;
+			cout<<"left"<<endl;
+		}
+	}
+
+	x=P.GetAbsis()+1;
+	y=P.GetOrdinat();
+	found=false;
+	feasible=true;
+	countmove=1;
+	while((x<=last_col) && (!found) && feasible){
+		Point p(x,y);
+		if(map.GetElmt(y,x)=='+'){
+			found=true;
+		}
+		else if((map.GetElmt(y,x)=='#') || (in_danger(p)))
+			feasible=false;
+		else if(map.GetElmt(y-1, x)=='+'){
+			countmove++;
+			found=true;
+		}
+		else if(map.GetElmt(y+1, x)=='+'){
+			countmove++;
+			found=true;
+		}
+		else{
+			countmove++;
+			x++;
+		}
+	}
+	if(found){
+		if(countmove<min){
+			min=countmove;
+			mv=3;
+			cout<<"right"<<endl;
+		}
+	}
+
+	x=P.GetAbsis();
+	y=P.GetOrdinat()-1;
+	found=false;
+	feasible=true;
+	countmove=1;
+	while((y>start_row) && (!found) && feasible){
+		Point p(x,y);
+		if(map.GetElmt(y,x)=='+'){
+			found=true;
+		}
+		else if((map.GetElmt(y,x)=='#') || (in_danger(p)))
+			feasible=false;
+		else if(map.GetElmt(y, x-1)=='+'){
+			countmove++;
+			found=true;
+		}
+		else if(map.GetElmt(y, x+1)=='+'){
+			countmove++;
+			found=true;
+		}
+		else{
+			countmove++;
+			y--;
+			cout<<"up"<<endl;
+		}
+	}
+	if(found){
+		if(countmove<min){
+			min=countmove;
+			mv=1;
+		}
+	}
+
+	x=P.GetAbsis();
+	y=P.GetOrdinat()+1;
+	found=false;
+	feasible=true;
+	countmove=1;
+	while((y<=last_row) && (!found) && feasible){
+		Point p(x,y);
+		if(map.GetElmt(y,x)=='+'){
+			found=true;
+		}
+		else if((map.GetElmt(y,x)=='#') || (in_danger(p)))
+			feasible=false;
+		else if(map.GetElmt(y, x-1)=='+'){
+			countmove++;
+			found=true;
+		}
+		else if(map.GetElmt(y, x+1)=='+'){
+			countmove++;
+			found=true;
+		}
+		else{
+			countmove++;
+			y++;
+		}
+	}
+	if(found){
+		if(countmove<min){
+			min=countmove;
+			mv=4;
+			cout<<"down"<<endl;
+		}
+	}
 
 	if(min!=map.GetWidth()){
 		move=mv;

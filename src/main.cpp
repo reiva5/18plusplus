@@ -38,7 +38,7 @@ int move(Point& P, Map& M, GameState& state){
 			}
 			else{
 				i++;
-				//cout<<"not left"<<endl;
+				cout<<"not left"<<endl;
 			}
 		}
 		else if(i==1){
@@ -48,7 +48,7 @@ int move(Point& P, Map& M, GameState& state){
 			}
 			else{ 
 				i++;
-				//cout<<"not up"<<endl;
+				cout<<"not up"<<endl;
 			}
 		}
 		else if(i==3){
@@ -58,7 +58,7 @@ int move(Point& P, Map& M, GameState& state){
 			}
 			else{
 				i++;
-				//cout<<"not right"<<endl;
+				cout<<"not right"<<endl;
 			}
 		}
 		else if(i==4){
@@ -68,7 +68,7 @@ int move(Point& P, Map& M, GameState& state){
 			}
 			else{
 				i=1;
-				//cout<<"not down"<<endl;
+				cout<<"not down"<<endl;
 			}
 		}
 	}
@@ -111,43 +111,22 @@ int main(int argc, char** argv){
 
 	int nextmove;
 	if(state.in_danger(playerPosisi)){
-		// Point up(playerPosisi.GetAbsis(), playerPosisi.GetOrdinat()-1);
-		// Point down(playerPosisi.GetAbsis(), playerPosisi.GetOrdinat()+1);
-		// Point right(playerPosisi.GetAbsis()+1, playerPosisi.GetOrdinat());
-		// Point left(playerPosisi.GetAbsis()-1, playerPosisi.GetOrdinat());
-		// if((!state.in_danger(up)) && (m.GetElmt(playerPosisi.GetOrdinat()-1,playerPosisi.GetAbsis())==' ')){
-		// 	nextmove=1;
-		// 	cout<<"up"<<endl;
-		// }
-		// else if((!state.in_danger(down)) && (m.GetElmt(playerPosisi.GetOrdinat()+1,playerPosisi.GetAbsis())==' ')){
-		// 	nextmove=4;
-		// 	cout<<"down"<<endl;
-		// }
-		// else if((!state.in_danger(left)) && (m.GetElmt(playerPosisi.GetOrdinat(),playerPosisi.GetAbsis()-1)==' ')){
-		// 	nextmove=2;
-		// 	cout<<"left"<<endl;
-		// }
-		// else if((!state.in_danger(right)) && (m.GetElmt(playerPosisi.GetOrdinat(),playerPosisi.GetAbsis()+1)==' ')){
-		// 	nextmove=3;
-		// 	cout<<"right"<<endl;
-		// }
-		// else{
-		// 	//harusnya bukan ini
-		// 	nextmove=move(playerPosisi, m);	
-		// 	cout<<"in_danger yes"<<endl;
-		// }
 		if(state.move_away(playerPosisi, nextmove))
-			cout<<"cant moveaway"<<endl;
+			cout<<"moveaway"<<endl;
 		else
 			nextmove=move(playerPosisi, m, state);
 	}
 	else{
-		if(((m.GetElmt(playerPosisi.GetOrdinat(), playerPosisi.GetAbsis()-1)=='+')||(m.GetElmt(playerPosisi.GetOrdinat()-1, playerPosisi.GetAbsis())=='+')
+		if(state.get_power_up(playerPosisi, nextmove))
+			cout<<"getting power up"<<endl;
+		else if(((m.GetElmt(playerPosisi.GetOrdinat(), playerPosisi.GetAbsis()-1)=='+')||(m.GetElmt(playerPosisi.GetOrdinat()-1, playerPosisi.GetAbsis())=='+')
 			||(m.GetElmt(playerPosisi.GetOrdinat(), playerPosisi.GetAbsis()+1)=='+')||(m.GetElmt(playerPosisi.GetOrdinat()+1, playerPosisi.GetAbsis())=='+'))
 			&&(myBombBag>0)){
 			nextmove=5;
 			cout<<"drop bomb"<<endl;
 		}
+		else if(state.get_wall(playerPosisi, nextmove))
+			cout<<"getting wall"<<endl;
 		else{
 			nextmove=move(playerPosisi, m, state);	
 			cout<<"free move"<<endl;

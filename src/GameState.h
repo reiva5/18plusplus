@@ -21,6 +21,8 @@ class GameState
 		bool in_area(Point P, Bomb B);
 		bool move_away(Point P, int& move);
 		int move_BFS(Point P);
+		bool get_power_up(Point P, int& move);
+		bool get_wall(Point P, int&move);
 
 	private:
 		Map map;
