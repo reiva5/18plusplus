@@ -608,3 +608,49 @@ bool GameState::other_in_my_reach(char playerKey, Point P, int rad)
 	}
 	return found;
 }
+
+bool GameState::bomb_in_absis(Player player, Bomb bomb)
+{
+	return (player.GetPosisi().GetAbsis() == bomb.GetPosisi().GetAbsis() && (abs(player.GetPosisi().GetOrdinat()-bomb.GetPosisi().GetOrdinat()) <= bomb.GetJarak()));
+}
+
+bool GameState::bomb_in_ordinat(Player player, Bomb bomb)
+{
+	return (player.GetPosisi().GetOrdinat() == bomb.GetPosisi().GetOrdinat() && (abs(player.GetPosisi().GetAbsis()-bomb.GetPosisi().GetAbsis()) <= bomb.GetJarak()));
+}
+
+bool GameState::trigger(char playerKey, Point P)
+{
+	bool accepted = false;
+	if (!in_danger(P))
+	{
+		bool found = false;
+		for (int i = 0; i < bomb.size() && !found; ++i)
+		{
+			if (bomb[i].GetOwner() == playerKey)
+			{
+				bool set = false;
+				for (int j = 0; j < player.size() && !set; ++j)
+				{
+					if ((player[j].GetKey() != playerKey) && ( (bomb_in_absis(player[j], bomb[i]) && (wall_in_row(player[j].GetPosisi(), bomb[i].GetPosisi()))) || (bomb_in_ordinat(player[j], bomb[i]) && (wall_in_column(player[j].GetPosisi(), bomb[i].GetPosisi())))))
+					{
+						set = true;
+					}
+				}
+				if (set)
+				{
+					found = true;
+				}
+			}
+		}
+		if (found)
+		{
+			accepted = true;
+		}
+		return accepted;
+	}
+	else
+	{
+		return (accepted);
+	}
+}

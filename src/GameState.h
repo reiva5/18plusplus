@@ -29,6 +29,10 @@ class GameState
 		bool get_wall(Point P, int&move);
 		int get_near_bomb(Point P);
 		bool other_in_my_reach(char playerKey, Point P, int rad);
+		bool bomb_in_absis(Player P, Bomb b);
+		bool bomb_in_ordinat(Player P, Bomb b);
+		bool trigger(char playerKey, Point P);
+
 
 	private:
 		Map map;
