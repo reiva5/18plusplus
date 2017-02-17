@@ -120,7 +120,8 @@ int main(int argc, char** argv){
 		if(state.move_away(playerPosisi, nextmove))
 			cout<<"moveaway"<<endl;
 		else{
-			nextmove=state.get_near_bomb(playerPosisi);
+			nextmove=-1;
+			cout<<"silent"<<endl;
 		}
 			
 	}

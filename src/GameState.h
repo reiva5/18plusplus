@@ -18,10 +18,11 @@ class GameState
 		vector<Player> GetPlayer();
 		vector<Bomb> GetBomb();
 		int SearchEntity (Point P, char c, Point center, string avoid, int maxmove);
+		int SearchSafePlace (Point P, Point center);
 		bool wall_in_row(Point P1, Point P2);
 		bool wall_in_column(Point P1, Point P2);
 		bool in_danger(Point P);
-		bool in_area(Point P, Bomb B);
+		// bool in_area(Point P, Bomb B);
 		bool move_away(Point P, int& move);
 		int move_BFS(Point P);
 		bool get_power_up(Point P, int& move);

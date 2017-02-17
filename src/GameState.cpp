@@ -143,14 +143,6 @@ int GameState::SearchEntity (Point P, char c, Point center, string avoid, int ma
 
 
 	while(!QueueTemp.empty() && (!found)){
-
-		for(i=0; i<map.GetHeight(); i++){
-			for(j=0; j<map.GetWidth(); j++){
-				cout<<jalur[i][j]<<' ';
-			}
-			cout<<endl;
-		}
-		cout<<endl;
 		top = QueueTemp.front();
 		int tempJalur=jalur[top.GetOrdinat()][top.GetAbsis()];
 		QueueTemp.pop();
@@ -164,7 +156,7 @@ int GameState::SearchEntity (Point P, char c, Point center, string avoid, int ma
 			temp.SetOrdinat(top.GetOrdinat()+GoY[i]);
 			if((temp.GetAbsis()<map.GetWidth()) && (temp.GetAbsis()>=0) && (temp.GetOrdinat()<map.GetHeight())
 				&& (temp.GetOrdinat()>=0)){
-				if((jalur[temp.GetOrdinat()][temp.GetAbsis()] == 0) &&(tempJalur+1!=bombMap[temp.GetOrdinat()][temp.GetAbsis()])){
+				if((jalur[temp.GetOrdinat()][temp.GetAbsis()] == 0) &&(tempJalur+1!=bombMap[temp.GetOrdinat()][temp.GetAbsis()]) && (tempJalur+1<=maxmove)){
 						jalur[temp.GetOrdinat()][temp.GetAbsis()] = tempJalur+1;
 						QueueTemp.push(temp);
 						
@@ -182,6 +174,126 @@ int GameState::SearchEntity (Point P, char c, Point center, string avoid, int ma
 		return -1;
 	}
 }
+
+int GameState::SearchSafePlace (Point P, Point center){
+	int jalur[map.GetHeight()][map.GetWidth()];
+	int GoY[] = {0,1,0,-1};
+	int GoX[] = {1,0,-1,0};
+	Point temp, top;
+	int i,j, ret;
+	queue<Point> QueueTemp;
+	bool found=false;
+	int bombMap[map.GetHeight()][map.GetWidth()];
+
+	for(int i=0; i<map.GetHeight(); i++){
+		for(int j=0; j<map.GetWidth(); j++){
+			bombMap[i][j]=99;
+		}
+	}
+
+	for(int j=0; j<bomb.size(); j++){
+		Point bombPos=bomb[j].GetPosisi();
+		int rad=bomb[j].GetJarak();
+		int i=0;
+		while((i<=rad) && (bombPos.GetAbsis()+i<map.GetWidth())){
+			if((map.GetElmt(bombPos.GetOrdinat(), bombPos.GetAbsis()+i)!='#') && (map.GetElmt(bombPos.GetOrdinat(), bombPos.GetAbsis()+i)!='+')){
+				if(bombMap[bombPos.GetOrdinat()][bombPos.GetAbsis()+i]>bomb[j].GetDurasi()){
+					bombMap[bombPos.GetOrdinat()][bombPos.GetAbsis()+i]=bomb[j].GetDurasi();
+				}
+			}
+			else
+				break;
+			i++;
+		}
+
+		i=0;
+		while((i<=rad) && (bombPos.GetOrdinat()+i<map.GetHeight())){
+			if((map.GetElmt(bombPos.GetOrdinat()+i, bombPos.GetAbsis())!='#') && (map.GetElmt(bombPos.GetOrdinat()+i, bombPos.GetAbsis())!='+')){
+				if(bombMap[bombPos.GetOrdinat()+i][bombPos.GetAbsis()]>bomb[j].GetDurasi()){
+					bombMap[bombPos.GetOrdinat()+i][bombPos.GetAbsis()]=bomb[j].GetDurasi();
+				}
+			}
+			else
+				break;
+			i++;
+		}
+
+		i=0;
+		while((i<=rad) && (bombPos.GetAbsis()-i>0)){
+			if((map.GetElmt(bombPos.GetOrdinat(), bombPos.GetAbsis()-i)!='#') && (map.GetElmt(bombPos.GetOrdinat(), bombPos.GetAbsis()-i)!='+')){
+				if(bombMap[bombPos.GetOrdinat()][bombPos.GetAbsis()-i]>bomb[j].GetDurasi()){
+					bombMap[bombPos.GetOrdinat()][bombPos.GetAbsis()-i]=bomb[j].GetDurasi();
+				}
+			}
+			else
+				break;
+			i++;
+		}
+
+		i=0;
+		while((i<=rad) && (bombPos.GetOrdinat()-i>0)){
+			if((map.GetElmt(bombPos.GetOrdinat()-i, bombPos.GetAbsis())!='#') && (map.GetElmt(bombPos.GetOrdinat()-i, bombPos.GetAbsis())!='+')){
+				if(bombMap[bombPos.GetOrdinat()-i][bombPos.GetAbsis()]>bomb[j].GetDurasi()){
+					bombMap[bombPos.GetOrdinat()-i][bombPos.GetAbsis()]=bomb[j].GetDurasi();
+				}
+			}
+			else
+				break;
+			i++;
+		}
+	}
+	
+	for(i=0; i<map.GetHeight(); i++){
+		for(j=0; j<map.GetWidth(); j++){
+			if(map.GetElmt(i,j)=='+' || map.GetElmt(i, j)== '#' || map.GetElmt(i, j)== '0')
+				jalur[i][j]=-1;
+			else
+				jalur[i][j]=0;
+		}
+	}
+
+	bool feasible=true;
+	jalur[center.GetOrdinat()][center.GetAbsis()] = -1;
+	jalur[P.GetOrdinat()][P.GetAbsis()] = 1;
+	if(bombMap[P.GetOrdinat()][P.GetAbsis()]<=2){
+		feasible= false;
+	}
+
+	QueueTemp.push(P);
+
+
+	while(!QueueTemp.empty() && (!found) && (feasible)){
+		top = QueueTemp.front();
+		int tempJalur=jalur[top.GetOrdinat()][top.GetAbsis()];
+		QueueTemp.pop();
+		if(bombMap[top.GetOrdinat()][top.GetAbsis()]==99){
+			found=true;
+			ret=jalur[top.GetOrdinat()][top.GetAbsis()];
+		}
+
+		for(i=0; i<4; i++){
+			temp.SetAbsis(top.GetAbsis()+GoX[i]);
+			temp.SetOrdinat(top.GetOrdinat()+GoY[i]);
+			if((temp.GetAbsis()<map.GetWidth()) && (temp.GetAbsis()>=0) && (temp.GetOrdinat()<map.GetHeight())
+				&& (temp.GetOrdinat()>=0)){
+				if((jalur[temp.GetOrdinat()][temp.GetAbsis()] == 0) &&(tempJalur+2!=bombMap[temp.GetOrdinat()][temp.GetAbsis()])){
+						jalur[temp.GetOrdinat()][temp.GetAbsis()] = tempJalur+1;
+						QueueTemp.push(temp);
+				}
+			}
+		}
+	}
+	if(found){
+		cout<<"found"<<endl;
+		cout<<ret<<endl;
+		return ret;
+	}
+	else{
+		cout<<"not found"<<endl;
+		return -1;
+	}
+}
+
 
 bool GameState::wall_in_row(Point P1, Point P2)
 {
@@ -274,245 +386,6 @@ bool GameState::in_danger(Point P)
 }
 
 
-bool GameState::in_area(Point P, Bomb B)
-{
-	Point Ptemp = B.GetPosisi();
-	bool cekX = false;
-	bool cekY = false;
-	int batas1,batas2;
-
-	batas1 = Ptemp.GetAbsis() + B.GetJarak();
-	batas2 = Ptemp.GetAbsis() - B.GetJarak();
-	if(P.GetAbsis() >= batas2 && P.GetAbsis() <= batas1)
-	{
-		cekX=true;
-	}
-	batas1 = Ptemp.GetOrdinat() + B.GetJarak();
-	batas2 = Ptemp.GetOrdinat() - B.GetJarak();
-	if(P.GetOrdinat() >= batas2 && P.GetOrdinat() <= batas1)
-	{
-		cekY = true;
-	}
-
-	return (cekY && cekX);
-}
-
-bool GameState::move_away(Point P, int& move){
-	int min=map.GetWidth(); 
-	int bombMap[map.GetHeight()][map.GetWidth()];
-
-	for(int i=0; i<map.GetHeight(); i++){
-		for(int j=0; j<map.GetWidth(); j++){
-			bombMap[i][j]=99;
-		}
-	}
-
-	for(int j=0; j<bomb.size(); j++){
-		Point bombPos=bomb[j].GetPosisi();
-		int rad=bomb[j].GetJarak();
-		int i=0;
-		while((i<=rad) && (bombPos.GetAbsis()+i<map.GetWidth())){
-			if((map.GetElmt(bombPos.GetOrdinat(), bombPos.GetAbsis()+i)!='#') && (map.GetElmt(bombPos.GetOrdinat(), bombPos.GetAbsis()+i)!='+')){
-				if(bombMap[bombPos.GetOrdinat()][bombPos.GetAbsis()+i]>bomb[j].GetDurasi()){
-					bombMap[bombPos.GetOrdinat()][bombPos.GetAbsis()+i]=bomb[j].GetDurasi();
-				}
-			}
-			else
-				break;
-			i++;
-		}
-
-		i=0;
-		while((i<=rad) && (bombPos.GetOrdinat()+i<map.GetHeight())){
-			if((map.GetElmt(bombPos.GetOrdinat()+i, bombPos.GetAbsis())!='#') && (map.GetElmt(bombPos.GetOrdinat()+i, bombPos.GetAbsis())!='+')){
-				if(bombMap[bombPos.GetOrdinat()+i][bombPos.GetAbsis()]>bomb[j].GetDurasi()){
-					bombMap[bombPos.GetOrdinat()+i][bombPos.GetAbsis()]=bomb[j].GetDurasi();
-				}
-			}
-			else
-				break;
-			i++;
-		}
-
-		i=0;
-		while((i<=rad) && (bombPos.GetAbsis()-i>0)){
-			if((map.GetElmt(bombPos.GetOrdinat(), bombPos.GetAbsis()-i)!='#') && (map.GetElmt(bombPos.GetOrdinat(), bombPos.GetAbsis()-i)!='+')){
-				if(bombMap[bombPos.GetOrdinat()][bombPos.GetAbsis()-i]>bomb[j].GetDurasi()){
-					bombMap[bombPos.GetOrdinat()][bombPos.GetAbsis()-i]=bomb[j].GetDurasi();
-				}
-			}
-			else
-				break;
-			i++;
-		}
-
-		i=0;
-		while((i<=rad) && (bombPos.GetOrdinat()-i>0)){
-			if((map.GetElmt(bombPos.GetOrdinat()-i, bombPos.GetAbsis())!='#') && (map.GetElmt(bombPos.GetOrdinat()-i, bombPos.GetAbsis())!='+')){
-				if(bombMap[bombPos.GetOrdinat()-i][bombPos.GetAbsis()]>bomb[j].GetDurasi()){
-					bombMap[bombPos.GetOrdinat()-i][bombPos.GetAbsis()]=bomb[j].GetDurasi();
-				}
-			}
-			else
-				break;
-			i++;
-		}
-	}
-
-	for(int i=0; i<map.GetHeight(); i++){
-		for(int j=0; j<map.GetWidth(); j++){
-			cout<<bombMap[i][j]<<' ';
-		}
-		cout<<endl;
-	}
-
-	int mv;
-	Point playPos=P;
-	int countmove=1;
-	bool feasible=true;
-	bool safe=false;
-	while((feasible) && (!safe)){
-		if((playPos.GetAbsis()+countmove<map.GetWidth()) && (bombMap[playPos.GetOrdinat()][playPos.GetAbsis()+countmove]>countmove+1) && 
-			(map.GetElmt(playPos.GetOrdinat(), playPos.GetAbsis()+countmove)!='#') && (map.GetElmt(playPos.GetOrdinat(), playPos.GetAbsis()+countmove)!='+')){
-			if(bombMap[playPos.GetOrdinat()][playPos.GetAbsis()+countmove]==99){
-				safe=true;
-			}
-			else if((map.GetElmt(playPos.GetOrdinat()-1, playPos.GetAbsis()+countmove)!='#') && (map.GetElmt(playPos.GetOrdinat()-1, playPos.GetAbsis()+countmove)!='+')
-				&& (bombMap[playPos.GetOrdinat()-1][playPos.GetAbsis()+countmove]==99)){
-				safe=true;
-				countmove++;
-			}
-			else if((map.GetElmt(playPos.GetOrdinat()+1, playPos.GetAbsis()+countmove)!='#') && (map.GetElmt(playPos.GetOrdinat()+1, playPos.GetAbsis()+countmove)!='+')
-				&& (bombMap[playPos.GetOrdinat()+1][playPos.GetAbsis()+countmove]==99)){
-				safe=true;
-				countmove++;
-			}
-			else
-				countmove++;
-		}
-		else if( (bombMap[playPos.GetOrdinat()][playPos.GetAbsis()+countmove]<countmove))
-			safe=true;
-		else
-			feasible=false;
-	}
-	if(safe && (countmove<min)){
-		min=countmove;
-		mv=3;
-	}
-	else
-		cout<<"cant right"<<endl;
-
-	countmove=1;
-	feasible=true;
-	safe=false;
-	while((feasible) && (!safe)){
-		if((playPos.GetOrdinat()+countmove<map.GetHeight()) && (bombMap[playPos.GetOrdinat()+countmove][playPos.GetAbsis()]>countmove+1) && 
-			(map.GetElmt(playPos.GetOrdinat()+countmove, playPos.GetAbsis())!='#') && (map.GetElmt(playPos.GetOrdinat()+countmove, playPos.GetAbsis())!='+')){
-			if(bombMap[playPos.GetOrdinat()+countmove][playPos.GetAbsis()]==99){
-				safe=true;
-			}
-			else if((map.GetElmt(playPos.GetOrdinat()+countmove, playPos.GetAbsis()-1)!='#') && (map.GetElmt(playPos.GetOrdinat()+countmove, playPos.GetAbsis()-1)!='+')
-				&& (bombMap[playPos.GetOrdinat()+countmove][playPos.GetAbsis()-1]==99)){
-				safe=true;
-				countmove++;
-			}
-			else if((map.GetElmt(playPos.GetOrdinat()+countmove, playPos.GetAbsis()+1)!='#') && (map.GetElmt(playPos.GetOrdinat()+countmove, playPos.GetAbsis()+1)!='+')
-				&& (bombMap[playPos.GetOrdinat()+countmove][playPos.GetAbsis()+1]==99)){
-				safe=true;
-				countmove++;
-			}
-			else
-				countmove++;
-		}
-		else if( (bombMap[playPos.GetOrdinat()+countmove][playPos.GetAbsis()]<countmove))
-			safe=true;
-		else
-			feasible=false;
-	}
-	if(safe && (countmove<min)){
-		mv=4;
-		min=countmove;
-	}
-	else
-		cout<<" cant down"<<endl;
-
-	countmove=1;
-	feasible=true;
-	safe=false;
-	while((feasible) && (!safe)){
-		if((playPos.GetAbsis()-countmove>0) && (bombMap[playPos.GetOrdinat()][playPos.GetAbsis()-countmove]>countmove+1) && 
-			(map.GetElmt(playPos.GetOrdinat(), playPos.GetAbsis()-countmove)!='#') &&  (map.GetElmt(playPos.GetOrdinat(), playPos.GetAbsis()-countmove)!='+')){
-			if(bombMap[playPos.GetOrdinat()][playPos.GetAbsis()-countmove]==99){
-				safe=true;
-			}
-			else if((map.GetElmt(playPos.GetOrdinat()-1, playPos.GetAbsis()-countmove)!='#') &&  (map.GetElmt(playPos.GetOrdinat()-1, playPos.GetAbsis()-countmove)!='+')
-				&& (bombMap[playPos.GetOrdinat()-1][playPos.GetAbsis()-countmove]==99)){
-				safe=true;
-				countmove++;
-			}
-			else if((map.GetElmt(playPos.GetOrdinat()+1, playPos.GetAbsis()-countmove)!='#') &&  (map.GetElmt(playPos.GetOrdinat()+1, playPos.GetAbsis()-countmove)!='+')
-				&& (bombMap[playPos.GetOrdinat()+1][playPos.GetAbsis()-countmove]==99)){
-				safe=true;
-				countmove++;
-			}
-			else
-				countmove++;
-		}
-		else if( (bombMap[playPos.GetOrdinat()][playPos.GetAbsis()-countmove]<countmove))
-			safe=true;
-		else
-			feasible=false;
-	}
-	if(safe && (countmove<min)){
-		min=countmove;
-		mv=2;
-	}
-	else
-		cout<<"cant left"<<endl;
-
-	countmove=1;
-	feasible=true;
-	safe=false;
-	while((feasible) && (!safe)){
-		if((playPos.GetOrdinat()-countmove>0) && (bombMap[playPos.GetOrdinat()-countmove][playPos.GetAbsis()]>countmove+1) && 
-			(map.GetElmt(playPos.GetOrdinat()-countmove, playPos.GetAbsis())!='#') && (map.GetElmt(playPos.GetOrdinat()-countmove, playPos.GetAbsis())!='+')){
-			if(bombMap[playPos.GetOrdinat()-countmove][playPos.GetAbsis()]==99){
-				safe=true;
-			}
-			else if((map.GetElmt(playPos.GetOrdinat()-countmove, playPos.GetAbsis()-1)!='#') && (map.GetElmt(playPos.GetOrdinat()-countmove, playPos.GetAbsis()-1)!='+')
-				&& (bombMap[playPos.GetOrdinat()-countmove][playPos.GetAbsis()-1]==99)){
-				safe=true;
-				countmove++;
-			}
-			else if((map.GetElmt(playPos.GetOrdinat()-countmove, playPos.GetAbsis()+1)!='#') && (map.GetElmt(playPos.GetOrdinat()-countmove, playPos.GetAbsis()+1)!='+')
-				&& (bombMap[playPos.GetOrdinat()-countmove][playPos.GetAbsis()+1]==99)){
-				safe=true;
-				countmove++;
-			}
-			else
-				countmove++;
-		}
-		else if( (bombMap[playPos.GetOrdinat()-countmove][playPos.GetAbsis()]<countmove))
-			safe=true;
-		else
-			feasible=false;
-	}
-	if(safe && (countmove<min)){
-		min=countmove;
-		mv=1;
-	}
-	else
-		cout<<"cant up"<<endl;
-
-	if(min!=map.GetWidth()){
-		move=mv;
-		return true;
-	}
-	else{
-		return false;
-	}
-}
-
 bool GameState::get_power_up(Point P, int& move){
 	Point up(P.GetAbsis(), P.GetOrdinat()-1);
 	Point down(P.GetAbsis(), P.GetOrdinat()+1);
@@ -532,7 +405,7 @@ bool GameState::get_power_up(Point P, int& move){
 	}
 	cout<<"check up"<<endl;
 
-	if(map.GetElmt(left.GetOrdinat(), left.GetAbsis())!='#' && (!in_danger(left)) && map.GetElmt(up.GetOrdinat(), up.GetAbsis())!='+'){
+	if(map.GetElmt(left.GetOrdinat(), left.GetAbsis())!='#' && (!in_danger(left)) && map.GetElmt(left.GetOrdinat(), left.GetAbsis())!='+'){
 		mintemp=SearchEntity(left, '!', P, "#+", 7);
 		if((mintemp<min) && (mintemp!=-1)){
 			min=mintemp;
@@ -541,7 +414,7 @@ bool GameState::get_power_up(Point P, int& move){
 	}
 	cout<<"check left"<<endl;
 
-	if(map.GetElmt(right.GetOrdinat(), right.GetAbsis())!='#' && (!in_danger(right)) && map.GetElmt(up.GetOrdinat(), up.GetAbsis())!='+'){
+	if(map.GetElmt(right.GetOrdinat(), right.GetAbsis())!='#' && (!in_danger(right)) && map.GetElmt(right.GetOrdinat(), right.GetAbsis())!='+'){
 		mintemp=SearchEntity(right, '!', P, "#+", 7);
 		if((mintemp<min) && (mintemp!=-1)){
 			min=mintemp;
@@ -550,7 +423,7 @@ bool GameState::get_power_up(Point P, int& move){
 	}
 	cout<<"check right"<<endl;
 
-	if(map.GetElmt(down.GetOrdinat(), down.GetAbsis())!='#' && (!in_danger(down)) && map.GetElmt(up.GetOrdinat(), up.GetAbsis())!='+'){
+	if(map.GetElmt(down.GetOrdinat(), down.GetAbsis())!='#' && (!in_danger(down)) && map.GetElmt(down.GetOrdinat(), down.GetAbsis())!='+'){
 		mintemp=SearchEntity(down, '!', P, "#+", 7);
 		if((mintemp<min) && (mintemp!=-1)){
 			min=mintemp;
@@ -568,6 +441,65 @@ bool GameState::get_power_up(Point P, int& move){
 	}
 
 
+}
+
+bool GameState::move_away(Point P, int& move){
+	Point up(P.GetAbsis(), P.GetOrdinat()-1);
+	Point down(P.GetAbsis(), P.GetOrdinat()+1);
+	Point right(P.GetAbsis()+1, P.GetOrdinat());
+	Point left(P.GetAbsis()-1, P.GetOrdinat());
+
+	int min=map.GetWidth();
+	int mintemp;
+	int mv;
+
+	if(map.GetElmt(up.GetOrdinat(), up.GetAbsis())!='#' && map.GetElmt(up.GetOrdinat(), up.GetAbsis())!='+'  && map.GetElmt(up.GetOrdinat(), up.GetAbsis())!='0'){
+		mintemp=SearchSafePlace(up, P);
+		if((mintemp<min) && (mintemp!=-1)){
+			min=mintemp;
+			mv=1;	
+		}
+		cout<<"check up"<<endl;
+	}
+	
+
+	if(map.GetElmt(left.GetOrdinat(), left.GetAbsis())!='#' && map.GetElmt(left.GetOrdinat(), left.GetAbsis())!='+'  && map.GetElmt(left.GetOrdinat(), left.GetAbsis())!='0'){
+		mintemp=SearchSafePlace(left, P);
+		if((mintemp<min) && (mintemp!=-1)){
+			min=mintemp;
+			mv=2;
+		}
+		cout<<"check left"<<endl;
+	}
+	
+
+	if(map.GetElmt(right.GetOrdinat(), right.GetAbsis())!='#' &&  map.GetElmt(right.GetOrdinat(), right.GetAbsis())!='+' &&  map.GetElmt(right.GetOrdinat(), right.GetAbsis())!='0'){
+		mintemp=SearchSafePlace(right, P);
+		if((mintemp<min) && (mintemp!=-1)){
+			min=mintemp;
+			mv=3;
+		}
+		cout<<"check right"<<endl;
+	}
+	
+
+	if(map.GetElmt(down.GetOrdinat(), down.GetAbsis())!='#' && map.GetElmt(down.GetOrdinat(), down.GetAbsis())!='+' && map.GetElmt(down.GetOrdinat(), down.GetAbsis())!='0'){
+		mintemp=SearchSafePlace(down, P);
+		if((mintemp<min) && (mintemp!=-1)){
+			min=mintemp;
+			mv=4;
+		}
+		cout<<"check down"<<endl;
+	}
+	
+
+	if(min!=map.GetWidth()){
+		move=mv;
+		return true;
+	}
+	else{
+		return false;
+	}
 }
 
 bool GameState::get_wall(Point P, int& move){
