@@ -20,59 +20,91 @@ void writeMoveFile(string filePath, int i)
 	}
 }
 
-bool move(Point& P, Map& M, GameState& state, int& nextmove){
+bool move(Point& P, Map& M, GameState& state, int& nextmove)
+{
 	srand(time(NULL));
 
-	int i=rand()%4+1;
-	bool found=false;
+	int i = rand()%4+1;
+	bool found = false;
 
 	Point up(P.GetAbsis(), P.GetOrdinat()-1);
 	Point down(P.GetAbsis(), P.GetOrdinat()+1);
 	Point right(P.GetAbsis()+1, P.GetOrdinat());
 	Point left(P.GetAbsis()-1, P.GetOrdinat());
-	int count=0;
-	while((!found) && (count<4)){
-		if(i==2){
-			if((P.GetAbsis()-1>=0) && (M.GetElmt(P.GetOrdinat(), P.GetAbsis()-1)!='#') && ((M.GetElmt(P.GetOrdinat(), P.GetAbsis()-1)!='+'))&& (!state.in_danger(left))){
-				found=true;
-				nextmove=i;
-			}
-			else{
-				i++;
-				cout<<"not left"<<endl;
-			}
+	int count = 0;
+	
+	char PlayerKey;
+	for (int i = 0; i < state.player.size() && !found; ++i)
+	{
+		if (state.player[i].GetPosisi().GetAbsis() == P.GetAbsis() && state.player[i].GetPosisi().GetOrdinat() == P.GetOrdinat())
+		{
+			found = true;
+			PlayerKey = state.player[i].GetKey();
 		}
-		else if(i==1){
-			if((P.GetOrdinat()-1>=0) && (M.GetElmt(P.GetOrdinat()-1, P.GetAbsis())!='#') && (M.GetElmt(P.GetOrdinat()-1, P.GetAbsis())!='+')&& (!state.in_danger(up))){
-				found=true;
-				nextmove=i;
+	}
+	
+	if (GameState.trigger(PlayerKey, P))
+	{
+		nextmove = 6;
+	}
+	else
+	{
+		while((!found) && (count<4))
+		{
+			if (i == 2)
+			{
+				if((P.GetAbsis()-1>=0) && (M.GetElmt(P.GetOrdinat(), P.GetAbsis()-1)!='#') && ((M.GetElmt(P.GetOrdinat(), P.GetAbsis()-1)!='+'))&& (!state.in_danger(left)))
+				{
+					found = true;
+					nextmove = i;
+				}
+				else
+				{
+					++i;
+					cout << "not left" << endl;
+				}
 			}
-			else{ 
-				i++;
-				cout<<"not up"<<endl;
+			else if (i == 1)
+			{
+				if((P.GetOrdinat()-1>=0) && (M.GetElmt(P.GetOrdinat()-1, P.GetAbsis())!='#') && (M.GetElmt(P.GetOrdinat()-1, P.GetAbsis())!='+')&& (!state.in_danger(up)))
+				{
+					found = true;
+					nextmove = i;
+				}
+				else
+				{ 
+					++i;
+					cout << "not up" << endl;
+				}
 			}
+			else if (i == 3)
+			{
+				if((P.GetAbsis()+1<M.GetWidth()) && (M.GetElmt(P.GetOrdinat(), P.GetAbsis()+1)!='#') && (M.GetElmt(P.GetOrdinat(), P.GetAbsis()+1)!='#')&& (!state.in_danger(right)))
+				{
+					found = true;
+					nextmove = i;
+				}
+				else
+				{
+					++i;
+					cout << "not right" << endl;
+				}
+			}
+			else if (i == 4)
+			{
+				if((P.GetOrdinat()+1<M.GetHeight())&& (M.GetElmt(P.GetOrdinat()+1, P.GetAbsis())!='#') && (M.GetElmt(P.GetOrdinat()+1, P.GetAbsis())!='+')&& (!state.in_danger(down)))
+				{
+					found = true;
+					nextmove = i;
+				}
+				else
+				{
+					i = 1;
+					cout << "not down" << endl;
+				}
+			}
+			++count;
 		}
-		else if(i==3){
-			if((P.GetAbsis()+1<M.GetWidth()) && (M.GetElmt(P.GetOrdinat(), P.GetAbsis()+1)!='#') && (M.GetElmt(P.GetOrdinat(), P.GetAbsis()+1)!='#')&& (!state.in_danger(right))){
-				found=true;
-				nextmove=i;
-			}
-			else{
-				i++;
-				cout<<"not right"<<endl;
-			}
-		}
-		else if(i==4){
-			if((P.GetOrdinat()+1<M.GetHeight())&& (M.GetElmt(P.GetOrdinat()+1, P.GetAbsis())!='#') && (M.GetElmt(P.GetOrdinat()+1, P.GetAbsis())!='+')&& (!state.in_danger(down))){
-				found=true;
-				nextmove=i;
-			}
-			else{
-				i=1;
-				cout<<"not down"<<endl;
-			}
-		}
-		count++;
 	}
 	return found;
 }
