@@ -1,4 +1,6 @@
 #include <vector>
+#include <string>
+#include <queue>
 #include "Map.h"
 #include "json.hpp"
 #include "Player.h"
@@ -15,7 +17,7 @@ class GameState
 		Map& GetMap();
 		vector<Player> GetPlayer();
 		vector<Bomb> GetBomb();
-		int SearchEntity (Point P, char c, Point center);
+		int SearchEntity (Point P, char c, Point center, string avoid, int maxmove);
 		bool wall_in_row(Point P1, Point P2);
 		bool wall_in_column(Point P1, Point P2);
 		bool in_danger(Point P);
