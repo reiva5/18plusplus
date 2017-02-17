@@ -15,6 +15,7 @@ class GameState
 		Map& GetMap();
 		vector<Player> GetPlayer();
 		vector<Bomb> GetBomb();
+		int SearchEntity (Point P, char c, Point center);
 		bool wall_in_row(Point P1, Point P2);
 		bool wall_in_column(Point P1, Point P2);
 		bool in_danger(Point P);
