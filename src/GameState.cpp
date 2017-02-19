@@ -629,18 +629,7 @@ bool GameState::trigger(char playerKey, Point P)
 		{
 			if (bomb[i].GetOwner() == playerKey)
 			{
-				bool set = false;
-				for (int j = 0; j < player.size() && !set; ++j)
-				{
-					if ((player[j].GetKey() != playerKey) && ( (bomb_in_absis(player[j], bomb[i]) && (wall_in_row(player[j].GetPosisi(), bomb[i].GetPosisi()))) || (bomb_in_ordinat(player[j], bomb[i]) && (wall_in_column(player[j].GetPosisi(), bomb[i].GetPosisi())))))
-					{
-						set = true;
-					}
-				}
-				if (set)
-				{
-					found = true;
-				}
+				found = true;
 			}
 		}
 		if (found)
